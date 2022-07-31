@@ -5,9 +5,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
+    primary = Colors().brandColor,
     primaryVariant = Purple700,
     secondary = Teal200
 )
@@ -35,10 +38,15 @@ fun MarvelAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
         LightColorPalette
     }
 
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalSpacing provides  Spacing(),
+        LocalColors provides Colors()
+    ){
+        MaterialTheme(
+            colors = colors,
+            typography = Typography,
+            shapes = Shapes,
+            content = content
+        )
+    }
 }

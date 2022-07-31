@@ -5,6 +5,8 @@ plugins {
 
 android {
     compileSdk 32
+    def properties =new Properties()
+    properties.load(new FileInputStream(rootProject.file("local.properties")))
 
     defaultConfig {
         applicationId "com.shahad.app.marvelapp"
@@ -12,6 +14,10 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "PUPLIC_API_KEY" , properties['publicKey']
+        buildConfigField "String", "PRIVATE_API_KEY" , properties['praviteKey']
+        buildConfigField "String", "BASE_URL" , properties['baseUrl']
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
