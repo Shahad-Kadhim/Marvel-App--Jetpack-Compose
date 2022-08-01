@@ -72,6 +72,8 @@ dependencies {
     def nav_version = "2.5.1"
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
+    //live data - compose
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
     //dagger hilt
     def hilt_version = "2.40.3"
@@ -89,7 +91,7 @@ dependencies {
     implementation "com.google.code.gson:gson:$gson_version"
 
     //image loader
-    implementation "io.coil-kt:coil:1.4.0"
+    implementation "io.coil-kt:coil-compose:2.1.0"
 
     //room database
     def room_version = "2.4.1"

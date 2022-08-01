@@ -12,22 +12,21 @@ import androidx.compose.ui.graphics.Color
 private val DarkColorPalette = darkColors(
     primary =Colors().backgroundColorNight,
     primaryVariant = Colors().brandColor,
-    secondary =  Colors().brandColor
+    secondary =  Colors().brandColor,
+    background = Colors().backgroundColorNight,
 )
 
 private val LightColorPalette = lightColors(
     primary = Colors().backgroundColorLight,
     primaryVariant = Colors().brandColor,
-    secondary = Colors().brandColor
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    secondary = Colors().brandColor,
+    background = Colors().backgroundColorLight,
+//    surface = Color.White,
+//    onPrimary = Color.White,
+//    onSecondary = Color.Black,
+//    onBackground = Color.White,
+    onSurface = Colors().brandColor,
+//    */
 )
 
 @Composable

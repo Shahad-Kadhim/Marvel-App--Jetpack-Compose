@@ -4,6 +4,7 @@ import androidx.compose.material.*
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
@@ -18,11 +19,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.shahad.app.marvelapp.ui.home.Home
+import com.shahad.app.marvelapp.ui.home.HomeViewModel
 import com.shahad.app.marvelapp.ui.theme.Colors
 import com.shahad.app.marvelapp.util.Screen
 import com.shahad.app.marvelapp.ui.theme.MarvelAppTheme
 import com.shahad.app.marvelapp.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -72,7 +76,8 @@ class MainActivity : ComponentActivity() {
                 composable(
                     route = Screen.HomeScreen.route,
                     content = {
-
+                        val viewModel: HomeViewModel by viewModels()
+                        Home(navController,viewModel)
                     }
                 )
 

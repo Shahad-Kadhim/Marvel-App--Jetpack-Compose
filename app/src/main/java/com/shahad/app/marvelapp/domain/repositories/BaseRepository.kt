@@ -27,6 +27,7 @@ interface BaseRepository {
             }
         } catch (exception: Exception) {
             Log.i("MARVEL", "no connection cant update data")
+            Log.i("MARVEL",exception.message.toString())
         }
     }
 
