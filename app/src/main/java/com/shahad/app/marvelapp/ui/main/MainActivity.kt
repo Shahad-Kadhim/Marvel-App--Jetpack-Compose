@@ -22,7 +22,9 @@ import com.shahad.app.marvelapp.ui.theme.Colors
 import com.shahad.app.marvelapp.util.Screen
 import com.shahad.app.marvelapp.ui.theme.MarvelAppTheme
 import com.shahad.app.marvelapp.util.Constants
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
