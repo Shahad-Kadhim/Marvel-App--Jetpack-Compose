@@ -29,7 +29,6 @@ import com.shahad.app.marvelapp.R
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
-import com.shahad.app.marvelapp.ui.theme.Colors
 import com.shahad.app.marvelapp.ui.theme.Spacing
 import java.util.*
 
@@ -159,7 +158,7 @@ fun CreatorItem(creator: Creator) {
         Text(
             text = creator.name,
             fontSize = 12.sp,
-            color = MaterialTheme.Colors.secondaryColorLight,
+            color = MaterialTheme.colors.onBackground,
             modifier = Modifier
                 .width(100.dp)
                 .padding(horizontal = MaterialTheme.Spacing.medium),
@@ -259,7 +258,7 @@ fun TitleSection(title: String, onClickSeeMore: () -> Unit){
             text = title,
             style = TextStyle(
                 fontSize = 18.sp,
-                color = MaterialTheme.Colors.primaryShadeLight
+                color = MaterialTheme.colors.onBackground
             ),
             modifier = Modifier
                 .padding(horizontal = MaterialTheme.Spacing.medium,)
@@ -270,7 +269,7 @@ fun TitleSection(title: String, onClickSeeMore: () -> Unit){
             text = "See all ${title.lowercase(Locale.ROOT)}",
             style = TextStyle(
                 fontSize = 14.sp,
-                color = MaterialTheme.Colors.secondaryColorLight
+                color = MaterialTheme.colors.onBackground
             ),
             modifier = Modifier
                 .padding(horizontal = MaterialTheme.Spacing.medium,)
@@ -297,7 +296,6 @@ fun HomeAppBar(){
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
-        backgroundColor = MaterialTheme.Colors.brandColor,
-        contentColor = Color.White
+        backgroundColor = MaterialTheme.colors.primary,
     )
 }

@@ -1,32 +1,30 @@
 package com.shahad.app.marvelapp.ui.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary =Colors().backgroundColorNight,
-    primaryVariant = Colors().brandColor,
-    secondary =  Color.DarkGray,
-    background = Colors().backgroundColorNight,
+    primary = brandColor,
+    primaryVariant = primaryShadeNight,
+    secondary =  backgroundCardNight,
+    background = backgroundColorNight,
+    onSecondary = primaryShadeNight,
+    onBackground = primaryShadeNight,
 )
-
+@SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
-    primary = Colors().backgroundColorLight,
-    primaryVariant = Colors().brandColor,
-    secondary = Color.White,
-    background = Colors().backgroundColorLight,
-//    surface = Color.White,
-//    onPrimary = Color.White,
-//    onSecondary = Color.Black,
-//    onBackground = Color.White,
-    onSurface = Colors().brandColor,
-//    */
+    primary = brandColor,
+    primaryVariant = primaryShadeLight,
+    secondary = backgroundCardLight,
+    background = backgroundColorLight,
+    onSecondary = primaryShadeLight,
+    onBackground = primaryShadeLight,
+//    onSurface = Colors().brandColor,
 )
 
 @Composable
@@ -39,7 +37,6 @@ fun MarvelAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
 
     CompositionLocalProvider(
         LocalSpacing provides  Spacing(),
-        LocalColors provides Colors()
     ){
         MaterialTheme(
             colors = colors,
