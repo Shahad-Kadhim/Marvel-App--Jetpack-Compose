@@ -10,7 +10,8 @@ class CharacterMapper @Inject constructor(): Mapper<CharacterEntity,Character> {
         Character(
             id = input.id,
             name = input.name,
-            image =input.imageUrl
+            image =input.imageUrl,
+            description = input.description ?: "No Description Available"
         )
 
 }

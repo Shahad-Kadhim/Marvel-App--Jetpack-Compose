@@ -5,10 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -29,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.shahad.app.marvelapp.R
+import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
 import com.shahad.app.marvelapp.ui.theme.Colors
@@ -46,6 +44,7 @@ fun Home(
     ) {
         val series by viewModel.series.observeAsState()
         val creators by viewModel.creators.observeAsState()
+        val characters by viewModel.characters.observeAsState()
 
         LazyColumn(modifier = Modifier.fillMaxSize()){
             series?.let {
@@ -60,15 +59,82 @@ fun Home(
                 }
             }
 
+           item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
+            characters?.let {
+                item {
+                     TitleSection(title = "Characters") {
+
+                     }
+                }
+//                this.CharacterRecycle(character = it)
+                items(it){ character ->
+                    CharacterItem(character = character )
+                }
+            }
+
         }
     }
 }
 
 @Composable
+fun CharacterItem(
+    character: Character,
+) {
+    Box(
+        modifier = Modifier
+            .padding(
+                horizontal = MaterialTheme.Spacing.medium,
+                vertical = MaterialTheme.Spacing.tiny
+            )
+            .fillMaxWidth()
+            .clickable {
+
+            }
+    ){
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colors.secondary)
+                .fillMaxWidth()
+                .padding(MaterialTheme.Spacing.medium)
+                .padding(end = 100.dp)
+                .align(Alignment.BottomCenter)
+                .clip(RoundedCornerShape(8.dp))
+        ) {
+            Text(
+                text = character.name,
+                fontSize = 14.sp,
+                maxLines = 1,
+                color = Color.Black
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.Spacing.tiny))
+
+            Text(
+                text = character.description.takeIf{it.isNotBlank()} ?: "No Description Available",
+                fontSize = 12.sp,
+                maxLines = 2,
+                color = Color.Black,
+            )
+        }
+        AsyncImage(
+            model = character.image,
+            contentDescription = character.name,
+            modifier = Modifier
+                .padding(end = MaterialTheme.Spacing.large, bottom = MaterialTheme.Spacing.medium)
+                .height(104.dp)
+                .width(86.dp)
+                .align(Alignment.TopEnd)
+                .clip(RoundedCornerShape(8.dp))
+                .border(1.dp, MaterialTheme.colors.onBackground, RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.FillBounds
+        )
+    }
+}
+
+@Composable
 fun CreatorRecycle(creators: List<Creator>) {
-    HorizontalSection(
+    Section(
         sectionTitle = "Creators",
-        items = creators
+        items = creators,
     ) {
         CreatorItem(it)
     }
@@ -107,19 +173,19 @@ fun CreatorItem(creator: Creator) {
 
 @Composable
 fun SeriesRecycle(series: List<Series>) {
-    HorizontalSection(
+    Section(
         sectionTitle = "Series",
-        items = series,
+        items = series
     ){
         SeriesItem(series = it)
     }
 }
 
 @Composable
-fun <T> HorizontalSection(
+fun <T> Section(
     sectionTitle: String,
     items: List<T>,
-    itemContent : @Composable (T) -> Unit
+    itemContent : @Composable (T) -> Unit,
 ){
     Column(
         Modifier
@@ -132,13 +198,15 @@ fun <T> HorizontalSection(
             item {
                 Spacer(modifier = Modifier.width(12.dp))
             }
-            items(items,){
+            items(items){
                 itemContent(it)
             }
         }
-
     }
 }
+
+
+
 @Composable
 fun SeriesItem(series: Series){
     Card(
