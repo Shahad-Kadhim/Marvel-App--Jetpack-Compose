@@ -21,11 +21,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.shahad.app.marvelapp.ui.home.Home
 import com.shahad.app.marvelapp.ui.home.HomeViewModel
+import com.shahad.app.marvelapp.ui.search.Search
+import com.shahad.app.marvelapp.ui.search.SearchViewModel
 import com.shahad.app.marvelapp.util.Screen
 import com.shahad.app.marvelapp.ui.theme.MarvelAppTheme
 import com.shahad.app.marvelapp.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -83,7 +84,8 @@ class MainActivity : ComponentActivity() {
                 composable(
                     route = Screen.SearchScreen.route,
                     content = {
-
+                        val viewModel: SearchViewModel by viewModels()
+                        Search(navController,viewModel)
                     }
                 )
 

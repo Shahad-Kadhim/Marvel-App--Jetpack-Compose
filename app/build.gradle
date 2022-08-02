@@ -119,4 +119,7 @@ dependencies {
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1'
     testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
 
+    //lottie file compose
+    implementation "com.airbnb.android:lottie-compose:5.2.0"
+
 }

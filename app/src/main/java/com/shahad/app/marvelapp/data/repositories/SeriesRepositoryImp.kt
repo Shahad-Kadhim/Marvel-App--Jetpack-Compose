@@ -1,10 +1,13 @@
-package com.shahad.app.marvelapp.domain.repositories
+package com.shahad.app.marvelapp.data.repositories
 
+import com.shahad.app.marvelapp.data.State
 import com.shahad.app.marvelapp.data.local.MarvelDao
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
 import com.shahad.app.marvelapp.data.remote.MarvelService
 import com.shahad.app.marvelapp.domain.mappers.DomainMapper
 import com.shahad.app.marvelapp.domain.models.Series
+import com.shahad.app.marvelapp.util.toImageUrl
+import com.shahad.app.marvelapp.util.toModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -31,6 +34,12 @@ class SeriesRepositoryImp @Inject constructor(
             body?.data?.results?.map { seriesDto ->
                 localMappers.seriesEntityMapper.map(seriesDto)
             }
+        }
+    }
+
+    override fun searchSeries(keyWord: String): Flow<State<List<Series>?>?> {
+        return wrapWithFlow { api.getSeries(searchKeyWord = keyWord) }.toModel {
+            Series(it.id,it.rating,it.title,it.thumbnail.toImageUrl())
         }
     }
 

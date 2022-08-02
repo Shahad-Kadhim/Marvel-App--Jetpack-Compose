@@ -1,6 +1,6 @@
 package com.shahad.app.marvelapp.di
 
-import com.shahad.app.marvelapp.domain.repositories.*
+import com.shahad.app.marvelapp.data.repositories.*
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

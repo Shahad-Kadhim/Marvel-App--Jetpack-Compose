@@ -20,7 +20,8 @@ interface MarvelService{
     @GET("series")
     suspend fun getSeries(
         @Query("limit") numberOfCharacters: Int = 20,
-    ): Response<BaseResponse<SeriesDto>>
+        @Query("titleStartsWith") searchKeyWord: String? = null,
+        ): Response<BaseResponse<SeriesDto>>
 
 
     @GET("creators")

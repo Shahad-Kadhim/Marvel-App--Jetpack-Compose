@@ -1,4 +1,4 @@
-package com.shahad.app.marvelapp.domain.repositories
+package com.shahad.app.marvelapp.data.repositories
 
 import android.util.Log
 import com.shahad.app.marvelapp.data.State
