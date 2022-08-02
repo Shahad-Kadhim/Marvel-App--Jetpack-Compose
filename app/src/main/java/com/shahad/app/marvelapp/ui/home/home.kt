@@ -92,18 +92,18 @@ fun CharacterItem(
     ){
         Column(
             modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colors.secondary)
                 .fillMaxWidth()
+                .height(100.dp)
                 .padding(MaterialTheme.Spacing.medium)
                 .padding(end = 100.dp)
                 .align(Alignment.BottomCenter)
-                .clip(RoundedCornerShape(8.dp))
         ) {
             Text(
                 text = character.name,
                 fontSize = 14.sp,
                 maxLines = 1,
-                color = Color.Black
             )
             Spacer(modifier = Modifier.height(MaterialTheme.Spacing.tiny))
 
@@ -111,7 +111,6 @@ fun CharacterItem(
                 text = character.description.takeIf{it.isNotBlank()} ?: "No Description Available",
                 fontSize = 12.sp,
                 maxLines = 2,
-                color = Color.Black,
             )
         }
         AsyncImage(

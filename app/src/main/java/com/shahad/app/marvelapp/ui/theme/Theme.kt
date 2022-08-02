@@ -7,6 +7,8 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
+import okhttp3.Cookie
 
 private val DarkColorPalette = darkColors(
     primary = brandColor,
@@ -15,6 +17,7 @@ private val DarkColorPalette = darkColors(
     background = backgroundColorNight,
     onSecondary = primaryShadeNight,
     onBackground = primaryShadeNight,
+    onPrimary = Color.White
 )
 @SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
@@ -24,6 +27,7 @@ private val LightColorPalette = lightColors(
     background = backgroundColorLight,
     onSecondary = primaryShadeLight,
     onBackground = primaryShadeLight,
+    onPrimary = Color.White
 //    onSurface = Colors().brandColor,
 )
 
