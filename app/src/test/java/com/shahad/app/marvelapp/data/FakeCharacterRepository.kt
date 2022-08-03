@@ -1,10 +1,16 @@
 package com.shahad.app.marvelapp.data
 
 import com.shahad.app.marvelapp.data.local.entities.CharacterEntity
+import com.shahad.app.marvelapp.data.local.mappers.CharacterEntityMapper
+import com.shahad.app.marvelapp.data.local.mappers.CreatorEntityMapper
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
+import com.shahad.app.marvelapp.data.local.mappers.SeriesEntityMapper
 import com.shahad.app.marvelapp.data.remote.response.CharacterDto
 import com.shahad.app.marvelapp.data.repositories.CharactersRepository
+import com.shahad.app.marvelapp.domain.mappers.CharacterMapper
+import com.shahad.app.marvelapp.domain.mappers.CreatorMapper
 import com.shahad.app.marvelapp.domain.mappers.DomainMapper
+import com.shahad.app.marvelapp.domain.mappers.SeriesMapper
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.util.toImageUrl
 import kotlinx.coroutines.flow.Flow
@@ -13,11 +19,13 @@ import javax.inject.Inject
 
 class FakeCharacterRepository: CharactersRepository{
 
-    @Inject
-    lateinit var domainMapper: DomainMapper
+    var domainMapper: DomainMapper = DomainMapper(CharacterMapper(), SeriesMapper(),
+        CreatorMapper()
+    )
 
-    @Inject
-    lateinit var localMapper: LocalMappers
+    var localMapper: LocalMappers = LocalMappers(CharacterEntityMapper(), SeriesEntityMapper(),
+        CreatorEntityMapper()
+    )
 
     private var shouldReturnError = false
 
@@ -33,15 +41,23 @@ class FakeCharacterRepository: CharactersRepository{
         shouldReturnError = value
     }
 
-    override suspend fun getCharacters(numberOfCharacter: Int): Flow<HomeScreenState<List<Character>>> {
+    fun updateRemoteCharacter(){
+        remoteCharacters[3] = CharacterDto(id = 3, name = "c3", description = "d3", modified = "2020/3/3")
+    }
+
+    fun getSizeOfRemoteCharacters() = remoteCharacters.size
+
+    override suspend fun getCharacters(numberOfCharacter: Int): Flow<List<Character>> {
         refreshCharacters(numberOfCharacter)
         return flow {
-            emit(HomeScreenState.Success(localCharacters.map { domainMapper.characterMapper.map(it.value) }))
+            emit(localCharacters.map { domainMapper.characterMapper.map(it.value) })
         }
     }
 
     override suspend fun refreshCharacters(numberOfCharacter: Int) {
-        localCharacters.putAll(remoteCharacters.map { Pair(it.key,localMapper.characterEntityMapper.map(it.value)) })
+        takeUnless { shouldReturnError }?.let {
+            localCharacters.putAll(remoteCharacters.map { Pair(it.key,localMapper.characterEntityMapper.map(it.value)) })
+        }
     }
 
     override fun searchCharacter(keyWord: String): Flow<SearchScreenState<List<Character>?>?> {

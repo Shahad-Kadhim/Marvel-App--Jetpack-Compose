@@ -1,23 +1,33 @@
 package com.shahad.app.marvelapp.data
 
 import com.shahad.app.marvelapp.data.local.entities.SeriesEntity
+import com.shahad.app.marvelapp.data.local.mappers.CharacterEntityMapper
+import com.shahad.app.marvelapp.data.local.mappers.CreatorEntityMapper
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
+import com.shahad.app.marvelapp.data.local.mappers.SeriesEntityMapper
 import com.shahad.app.marvelapp.data.remote.response.SeriesDto
 import com.shahad.app.marvelapp.data.repositories.SeriesRepository
+import com.shahad.app.marvelapp.domain.mappers.CharacterMapper
+import com.shahad.app.marvelapp.domain.mappers.CreatorMapper
 import com.shahad.app.marvelapp.domain.mappers.DomainMapper
+import com.shahad.app.marvelapp.domain.mappers.SeriesMapper
 import com.shahad.app.marvelapp.domain.models.Series
 import com.shahad.app.marvelapp.util.toImageUrl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class FakeSeriesRepository: SeriesRepository{
 
-    @Inject
-    lateinit var domainMapper: DomainMapper
 
-    @Inject
-    lateinit var localMapper: LocalMappers
+    var domainMapper: DomainMapper = DomainMapper(
+        CharacterMapper(), SeriesMapper(),
+        CreatorMapper()
+    )
+
+    var localMapper: LocalMappers = LocalMappers(
+        CharacterEntityMapper(), SeriesEntityMapper(),
+        CreatorEntityMapper()
+    )
 
     private var shouldReturnError = false
 
@@ -33,15 +43,25 @@ class FakeSeriesRepository: SeriesRepository{
         shouldReturnError = value
     }
 
-    override suspend fun getSeries(numberOfSeries: Int): Flow<HomeScreenState<List<Series>>> {
+
+    fun updateRemoteSeries(){
+        remoteSeries[3] = SeriesDto(id = 3, title =  "c3", modified = "2020/3/3")
+    }
+
+    fun getSizeOfRemoteSeries() = remoteSeries.size
+
+
+    override suspend fun getSeries(numberOfSeries: Int): Flow<List<Series>> {
         refreshSeries(numberOfSeries)
         return flow {
-            emit(HomeScreenState.Success(localSeries.map { domainMapper.seriesMapper.map(it.value) }))
+            emit(localSeries.map { domainMapper.seriesMapper.map(it.value) })
         }
     }
 
     override suspend fun refreshSeries(numberOfSeries: Int) {
-        localSeries.putAll(remoteSeries.map { Pair(it.key,localMapper.seriesEntityMapper.map(it.value)) })
+        takeUnless { shouldReturnError }?.let {
+            localSeries.putAll(remoteSeries.map { Pair(it.key,localMapper.seriesEntityMapper.map(it.value)) })
+        }
     }
 
     override fun searchSeries(keyWord: String): Flow<SearchScreenState<List<Series>?>?> {

@@ -1,6 +1,5 @@
 package com.shahad.app.marvelapp.data.repositories
 
-import com.shahad.app.marvelapp.data.HomeScreenState
 import com.shahad.app.marvelapp.data.SearchScreenState
 import com.shahad.app.marvelapp.data.local.MarvelDao
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
@@ -10,7 +9,6 @@ import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.util.convertTo
 import com.shahad.app.marvelapp.util.toImageUrl
 import com.shahad.app.marvelapp.util.toModel
-import com.shahad.app.marvelapp.util.wrapWithHomeStates
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -20,11 +18,10 @@ class CreatorsRepositoryImp @Inject constructor(
     private val domainMappers: DomainMapper,
     private val localMappers: LocalMappers
 ): CreatorsRepository, BaseRepository {
-    override suspend fun getCreators(numberOfCreators: Int): Flow<HomeScreenState<List<Creator>>> {
+    override suspend fun getCreators(numberOfCreators: Int): Flow<List<Creator>> {
         refreshCreators(numberOfCreators)
         return dao.getCreator()
             .convertTo(domainMappers.creatorMapper::map)
-            .wrapWithHomeStates()
     }
 
     override suspend fun refreshCreators(numberOfCreators: Int) {

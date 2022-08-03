@@ -1,6 +1,5 @@
 package com.shahad.app.marvelapp.data.repositories
 
-import com.shahad.app.marvelapp.data.HomeScreenState
 import com.shahad.app.marvelapp.data.SearchScreenState
 import com.shahad.app.marvelapp.data.local.MarvelDao
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
@@ -10,7 +9,6 @@ import com.shahad.app.marvelapp.domain.models.Series
 import com.shahad.app.marvelapp.util.convertTo
 import com.shahad.app.marvelapp.util.toImageUrl
 import com.shahad.app.marvelapp.util.toModel
-import com.shahad.app.marvelapp.util.wrapWithHomeStates
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -20,11 +18,10 @@ class SeriesRepositoryImp @Inject constructor(
     private val domainMappers: DomainMapper,
     private val localMappers: LocalMappers
 ): SeriesRepository , BaseRepository {
-    override suspend fun getSeries(numberOfSeries: Int): Flow<HomeScreenState<List<Series>>> {
+    override suspend fun getSeries(numberOfSeries: Int): Flow<List<Series>> {
         refreshSeries(numberOfSeries)
         return dao.getSeries()
             .convertTo(domainMappers.seriesMapper::map)
-            .wrapWithHomeStates()
     }
 
     override suspend fun refreshSeries(numberOfSeries: Int) {
