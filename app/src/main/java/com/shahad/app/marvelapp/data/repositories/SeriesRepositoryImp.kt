@@ -1,13 +1,16 @@
 package com.shahad.app.marvelapp.data.repositories
 
-import com.shahad.app.marvelapp.data.State
+import com.shahad.app.marvelapp.data.HomeScreenState
+import com.shahad.app.marvelapp.data.SearchScreenState
 import com.shahad.app.marvelapp.data.local.MarvelDao
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
 import com.shahad.app.marvelapp.data.remote.MarvelService
 import com.shahad.app.marvelapp.domain.mappers.DomainMapper
 import com.shahad.app.marvelapp.domain.models.Series
+import com.shahad.app.marvelapp.util.convertTo
 import com.shahad.app.marvelapp.util.toImageUrl
 import com.shahad.app.marvelapp.util.toModel
+import com.shahad.app.marvelapp.util.wrapWithHomeStates
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -17,16 +20,15 @@ class SeriesRepositoryImp @Inject constructor(
     private val domainMappers: DomainMapper,
     private val localMappers: LocalMappers
 ): SeriesRepository , BaseRepository {
-    override suspend fun getSeries(numberOfSeries: Int): Flow<List<Series>> {
+    override suspend fun getSeries(numberOfSeries: Int): Flow<HomeScreenState<List<Series>>> {
         refreshSeries(numberOfSeries)
-        return wrapper(
-            dao.getSeries(),
-            domainMappers.seriesMapper::map
-        )
+        return dao.getSeries()
+            .convertTo(domainMappers.seriesMapper::map)
+            .wrapWithHomeStates()
     }
 
     override suspend fun refreshSeries(numberOfSeries: Int) {
-        refreshWrapper(
+        refreshDataBase(
             api::getSeries,
             dao::insertSeries,
             numberOfSeries,
@@ -37,8 +39,8 @@ class SeriesRepositoryImp @Inject constructor(
         }
     }
 
-    override fun searchSeries(keyWord: String): Flow<State<List<Series>?>?> {
-        return wrapWithFlow { api.getSeries(searchKeyWord = keyWord) }.toModel {
+    override fun searchSeries(keyWord: String): Flow<SearchScreenState<List<Series>?>?> {
+        return wrapWithFlowOfSearchState { api.getSeries(searchKeyWord = keyWord) }.toModel {
             Series(it.id,it.rating,it.title,it.thumbnail.toImageUrl())
         }
     }

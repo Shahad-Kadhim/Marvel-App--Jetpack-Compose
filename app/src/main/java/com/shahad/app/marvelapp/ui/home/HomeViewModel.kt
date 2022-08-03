@@ -3,6 +3,7 @@ package com.shahad.app.marvelapp.ui.home
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shahad.app.marvelapp.data.HomeScreenState
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
@@ -20,9 +21,9 @@ class HomeViewModel @Inject constructor(
     private val creatorsUseCase: GetCreatorsUseCase,
 ): ViewModel() {
 
-    val series = MutableLiveData<List<Series>>()
-    val creators = MutableLiveData<List<Creator>>()
-    val characters = MutableLiveData<List<Character>>()
+    val series = MutableLiveData<HomeScreenState<List<Series>?>?>()
+    val creators = MutableLiveData<HomeScreenState<List<Creator>?>?>()
+    val characters = MutableLiveData<HomeScreenState<List<Character>?>?>()
 
     init {
         collectSeries()

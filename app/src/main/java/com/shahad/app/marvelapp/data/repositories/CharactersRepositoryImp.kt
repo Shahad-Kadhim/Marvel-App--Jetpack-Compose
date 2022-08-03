@@ -1,16 +1,17 @@
 package com.shahad.app.marvelapp.data.repositories
 
-import com.shahad.app.marvelapp.data.State
+import com.shahad.app.marvelapp.data.HomeScreenState
+import com.shahad.app.marvelapp.data.SearchScreenState
 import com.shahad.app.marvelapp.data.local.MarvelDao
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
 import com.shahad.app.marvelapp.data.remote.MarvelService
-import com.shahad.app.marvelapp.data.remote.response.CharacterDto
 import com.shahad.app.marvelapp.domain.mappers.DomainMapper
 import com.shahad.app.marvelapp.domain.models.Character
+import com.shahad.app.marvelapp.util.convertTo
 import com.shahad.app.marvelapp.util.toImageUrl
 import com.shahad.app.marvelapp.util.toModel
+import com.shahad.app.marvelapp.util.wrapWithHomeStates
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CharactersRepositoryImp @Inject constructor(
@@ -20,16 +21,16 @@ class CharactersRepositoryImp @Inject constructor(
     private val localMappers: LocalMappers
 ): CharactersRepository, BaseRepository {
 
-    override suspend fun getCharacters(numberOfCharacter: Int): Flow<List<Character>> {
+    override suspend fun getCharacters(numberOfCharacter: Int): Flow<HomeScreenState<List<Character>>> {
         refreshCharacters(numberOfCharacter)
-        return wrapper(
-            dao.getCharacters() ,
-            domainMappers.characterMapper::map,
-        )
+        return dao.getCharacters()
+            .convertTo(domainMappers.characterMapper::map)
+            .wrapWithHomeStates()
     }
 
+
     override suspend fun refreshCharacters(numberOfCharacter: Int) {
-        refreshWrapper(
+        refreshDataBase(
             api::getCharacters ,
             dao::insertCharacters,
             numberOfCharacter,
@@ -40,12 +41,10 @@ class CharactersRepositoryImp @Inject constructor(
         }
     }
 
-    override fun searchCharacter(keyWord: String): Flow<State<List<Character>?>?> {
-        return wrapWithFlow { api.getCharacters(searchKeyWord = keyWord) }.toModel {
+    override fun searchCharacter(keyWord: String): Flow<SearchScreenState<List<Character>?>?> {
+        return wrapWithFlowOfSearchState { api.getCharacters(searchKeyWord = keyWord) }.toModel {
             Character(it.id,it.name,it.thumbnail.toImageUrl(),it.description ?: "No Description")
         }
     }
-
-
 
 }

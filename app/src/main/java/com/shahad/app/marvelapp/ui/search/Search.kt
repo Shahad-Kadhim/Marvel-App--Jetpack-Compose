@@ -37,7 +37,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.shahad.app.marvelapp.R
-import com.shahad.app.marvelapp.data.State
+import com.shahad.app.marvelapp.data.SearchScreenState
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
@@ -50,111 +50,114 @@ import kotlinx.coroutines.launch
 fun Search(navController: NavController, viewModel: SearchViewModel){
     Scaffold(
         modifier =  Modifier.fillMaxSize(),
-    ) {
-        val search by viewModel.search.collectAsState()
-        val filterType by viewModel.filterType.collectAsState()
-        val isFiltersVisible by viewModel.isFiltersVisible.collectAsState()
-        val filters = listOf(FilterType.CHARACTER, FilterType.CREATOR, FilterType.SERIES)
-        val rotateAnimation = remember { Animatable(0f) }
-        val scope = rememberCoroutineScope()
-        val characters by viewModel.characters.observeAsState()
-        val creators by viewModel.creator.observeAsState()
-        val series by viewModel.series.observeAsState()
-        Column(Modifier.fillMaxSize()) {
-            Row(
-                Modifier
-                    .padding(
-                        horizontal = MaterialTheme.Spacing.medium,
-                        vertical = MaterialTheme.Spacing.medium
-                    )
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_back_arrow),
-                    contentDescription = "go back",
-                    modifier = Modifier
-                        .padding(vertical = MaterialTheme.Spacing.small)
-                        .clickable {
-                           navController.navigateUp()
-                        },
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
-                )
+        content = { padding ->
+            val search by viewModel.search.collectAsState()
+            val filterType by viewModel.filterType.collectAsState()
+            val isFiltersVisible by viewModel.isFiltersVisible.collectAsState()
+            val filters = listOf(FilterType.CHARACTER, FilterType.CREATOR, FilterType.SERIES)
+            val rotateAnimation = remember { Animatable(0f) }
+            val scope = rememberCoroutineScope()
+            val characters by viewModel.characters.observeAsState()
+            val creators by viewModel.creator.observeAsState()
+            val series by viewModel.series.observeAsState()
+            Column(Modifier.fillMaxSize()) {
                 Row(
-                    modifier = Modifier
-                        .padding(horizontal = MaterialTheme.Spacing.small)
-                        .clip(RoundedCornerShape(MaterialTheme.Spacing.small))
-                        .weight(1f)
+                    Modifier
+                        .padding(
+                            horizontal = MaterialTheme.Spacing.medium,
+                            vertical = MaterialTheme.Spacing.medium
+                        )
                         .fillMaxWidth()
-                        .height(42.dp)
-                        .background(MaterialTheme.colors.secondary),
-                    verticalAlignment = Alignment.CenterVertically
+                        .align(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = "search",
-                        modifier = Modifier.padding(
-                            vertical = MaterialTheme.Spacing.tiny,
-                            horizontal = MaterialTheme.Spacing.medium
-                        ),
+                        painter = painterResource(id = R.drawable.ic_back_arrow),
+                        contentDescription = "go back",
+                        modifier = Modifier
+                            .padding(vertical = MaterialTheme.Spacing.small)
+                            .clickable {
+                                navController.navigateUp()
+                            },
+                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
                     )
-                    BasicTextField(
-                        value = search,
-                        onValueChange = {
-                            viewModel.search.value = it
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        maxLines = 1
-                    )
-                }
-                Image(
-                    painter = painterResource(id = R.drawable.ic_drop_list),
-                    contentDescription = "filter",
-                    modifier = Modifier
-                        .padding(vertical = MaterialTheme.Spacing.small)
-                        .toggleable(
-                            value = isFiltersVisible,
-                            onValueChange = {
-                                viewModel.isFiltersVisible.value = !isFiltersVisible
-                                scope.launch {
-                                    rotateAnimation.animateTo(
-                                        targetValue = if (rotateAnimation.value == 180f) 0f else 180f,
-                                        animationSpec = tween(500, easing = LinearEasing)
-                                    )
-                                }
-                            }
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = MaterialTheme.Spacing.small)
+                            .clip(RoundedCornerShape(MaterialTheme.Spacing.small))
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .height(42.dp)
+                            .background(MaterialTheme.colors.secondary),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_search),
+                            contentDescription = "search",
+                            modifier = Modifier.padding(
+                                vertical = MaterialTheme.Spacing.tiny,
+                                horizontal = MaterialTheme.Spacing.medium
+                            ),
                         )
-                        .rotate(rotateAnimation.value),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
-                )
-            }
-            takeIf { isFiltersVisible }?.let {
-                ChipGroup(
-                    items = filters,
-                    selectedItem = filterType,
-                ) { selectedType ->
-                    viewModel.filterType.tryEmit(selectedType)
+                        BasicTextField(
+                            value = search,
+                            onValueChange = {
+                                viewModel.search.value = it
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            maxLines = 1
+                        )
+                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_drop_list),
+                        contentDescription = "filter",
+                        modifier = Modifier
+                            .padding(vertical = MaterialTheme.Spacing.small)
+                            .toggleable(
+                                value = isFiltersVisible,
+                                onValueChange = {
+                                    viewModel.isFiltersVisible.value = !isFiltersVisible
+                                    scope.launch {
+                                        rotateAnimation.animateTo(
+                                            targetValue = if (rotateAnimation.value == 180f) 0f else 180f,
+                                            animationSpec = tween(500, easing = LinearEasing)
+                                        )
+                                    }
+                                }
+                            )
+                            .rotate(rotateAnimation.value),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
+                    )
                 }
-            }
-            when (filterType) {
-                FilterType.CHARACTER -> {
-                    ShowCharacters(characters)
+                takeIf { isFiltersVisible }?.let {
+                    ChipGroup(
+                        items = filters,
+                        selectedItem = filterType,
+                    ) { selectedType ->
+                        viewModel.filterType.tryEmit(selectedType)
+                    }
                 }
-                FilterType.CREATOR -> {
+                when (filterType) {
+                    FilterType.CHARACTER -> {
+                        characters?.let {
+                            ShowCharacters(it)
+                        }
+                    }
+                    FilterType.CREATOR -> {
 //                            ShowCreators(creators)
-                }
-                FilterType.SERIES -> {
+                    }
+                    FilterType.SERIES -> {
 //                            ShowSeries(series)
+                    }
                 }
             }
-        }
 
-    }
+        }
+    )
 }
 
 @Composable
-fun LazyListScope.ShowSeries(state: State<List<Series>?>?) {
+fun LazyListScope.ShowSeries(state: SearchScreenState<List<Series>?>) {
     HandleState(state = state) {
         this.items(it){
 
@@ -164,17 +167,18 @@ fun LazyListScope.ShowSeries(state: State<List<Series>?>?) {
 
 @Composable
 fun <T> HandleState(
-    state: State<T?>?,
+    state: SearchScreenState<T?>,
     showResult: @Composable (T) -> Unit
 ){
     when(state){
-        is State.Error -> ErrorConnectionAnimation()
-        State.Loading -> LoadingAnimation()
-        is State.Success -> {
+        is SearchScreenState.Error -> ErrorConnectionAnimation()
+        SearchScreenState.Loading -> LoadingAnimation()
+        is SearchScreenState.Success -> {
             state.data?.let {
                 showResult(it)
             }
         }
+        SearchScreenState.Empty -> ErrorConnectionAnimation() //TODO LATER NO RESULT
     }
 }
 
@@ -208,7 +212,7 @@ fun ErrorConnectionAnimation(){
     BasicLottie(lottieId = R.raw.error)
 }
 @Composable
-fun LazyListScope.ShowCreators(state: State<List<Creator>?>?) {
+fun LazyListScope.ShowCreators(state: SearchScreenState<List<Creator>?>) {
     HandleState(state = state) {
         this.items(it){
 
@@ -217,7 +221,7 @@ fun LazyListScope.ShowCreators(state: State<List<Creator>?>?) {
 }
 
 @Composable
-fun ShowCharacters(state: State<List<Character>?>?) {
+fun ShowCharacters(state: SearchScreenState<List<Character>?>) {
     HandleState(state = state) {
         Log.i("ZZZ",it.toString())
         LazyColumn{

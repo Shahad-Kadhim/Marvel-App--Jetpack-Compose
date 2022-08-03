@@ -26,10 +26,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.shahad.app.marvelapp.R
+import com.shahad.app.marvelapp.data.HomeScreenState
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
+import com.shahad.app.marvelapp.ui.search.ErrorConnectionAnimation
+import com.shahad.app.marvelapp.ui.search.LoadingAnimation
 import com.shahad.app.marvelapp.ui.theme.Spacing
+import com.shahad.app.marvelapp.util.showIfSuccess
 import java.util.*
 
 @Composable
@@ -39,42 +43,71 @@ fun Home(
 ){
     Scaffold(
         modifier =  Modifier.fillMaxSize(),
-        topBar = { HomeAppBar() }
-    ) {
-        val series by viewModel.series.observeAsState()
-        val creators by viewModel.creators.observeAsState()
-        val characters by viewModel.characters.observeAsState()
+        topBar = { HomeAppBar() },
+        content = { padding ->
+            val series by viewModel.series.observeAsState()
+            val creators by viewModel.creators.observeAsState()
+            val characters by viewModel.characters.observeAsState()
 
-        LazyColumn(modifier = Modifier.fillMaxSize()){
-            series?.let {
-                item {
-                    SeriesRecycle(it)
-                }
-            }
-            item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
-            creators?.let {
-                item{
-                    CreatorRecycle(it)
-                }
-            }
+            LazyColumn(modifier = Modifier.fillMaxSize()){
 
-           item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
-            characters?.let {
-                item {
-                     TitleSection(title = "Characters") {
-
-                     }
+                series?.let { state ->
+                    item{
+                        HandleHomeState(state = state) {
+                            SeriesRecycle(series = it)
+                        }
+                    }
                 }
+
+                item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
+
+                creators?.let {state ->
+                    item{
+                        HandleHomeState(state = state) {
+                            CreatorRecycle(it)
+                        }
+                    }
+                }
+
+                item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
+                characters?.let {
+                    item {
+                        TitleSection(title = "Characters") {
+
+                        }
+                    }
 //                this.CharacterRecycle(character = it)
-                items(it){ character ->
-                    CharacterItem(character = character )
-                }
-            }
 
+                    it.showIfSuccess{ state ->
+                        state.data?.let {
+                            items(state.data){ character ->
+                                CharacterItem(character = character )
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    )
+}
+
+
+@Composable
+fun <T> HandleHomeState(
+    state: HomeScreenState<T?>,
+    showResult: @Composable (T) -> Unit
+){
+    when(state){
+        is HomeScreenState.Empty -> ErrorConnectionAnimation()
+        HomeScreenState.Loading -> LoadingAnimation()
+        is HomeScreenState.Success -> {
+            state.data?.let {
+                showResult(it)
+            }
         }
     }
 }
-
 @Composable
 fun CharacterItem(
     character: Character,

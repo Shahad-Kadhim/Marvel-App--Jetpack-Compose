@@ -1,7 +1,7 @@
 package com.shahad.app.marvelapp.ui.search
 
 import androidx.lifecycle.*
-import com.shahad.app.marvelapp.data.State
+import com.shahad.app.marvelapp.data.SearchScreenState
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
@@ -26,7 +26,7 @@ class SearchViewModel @Inject constructor(
     val filterType = MutableStateFlow<FilterType>(FilterType.CHARACTER)
     val isFiltersVisible = MutableStateFlow(false)
 
-    val characters = MediatorLiveData<State<List<Character>?>?>().apply {
+    val characters = MediatorLiveData<SearchScreenState<List<Character>?>?>().apply {
         addSource(search.asLiveData()){ characterName ->
             takeIf { filterType.value == FilterType.CHARACTER && characterName.isNotBlank() }?.let {
                 collect(searchCharacterUseCase.invoke(characterName))
@@ -39,7 +39,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    val creator = MediatorLiveData<State<List<Creator>?>?>().apply {
+    val creator = MediatorLiveData<SearchScreenState<List<Creator>?>?>().apply {
         addSource(search.asLiveData()){ creatorName ->
             takeIf { filterType.value == FilterType.CREATOR && creatorName.isNotBlank() }?.let {
                 collect(searchCreatorUseCase.invoke(creatorName))
@@ -52,7 +52,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    val series = MediatorLiveData<State<List<Series>?>?>().apply {
+    val series = MediatorLiveData<SearchScreenState<List<Series>?>?>().apply {
         addSource(search.asLiveData()){ seriesTitle ->
             takeIf { filterType.value == FilterType.SERIES && seriesTitle.isNotBlank()}?.let {
                 collect(searchSeriesUseCase.invoke(seriesTitle))
