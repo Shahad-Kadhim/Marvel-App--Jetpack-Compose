@@ -139,9 +139,7 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
                 }
                 when (filterType) {
                     FilterType.CHARACTER -> {
-                        characters?.let {
-                            ShowCharacters(it)
-                        }
+                        ShowCharacters(characters)
                     }
                     FilterType.CREATOR -> {
 //                            ShowCreators(creators)
@@ -157,7 +155,7 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
 }
 
 @Composable
-fun LazyListScope.ShowSeries(state: SearchScreenState<List<Series>?>) {
+fun LazyListScope.ShowSeries(state: SearchScreenState<List<Series>?>?) {
     HandleState(state = state) {
         this.items(it){
 
@@ -167,7 +165,7 @@ fun LazyListScope.ShowSeries(state: SearchScreenState<List<Series>?>) {
 
 @Composable
 fun <T> HandleState(
-    state: SearchScreenState<T?>,
+    state: SearchScreenState<T?>?,
     showResult: @Composable (T) -> Unit
 ){
     when(state){
@@ -179,6 +177,7 @@ fun <T> HandleState(
             }
         }
         SearchScreenState.Empty -> ErrorConnectionAnimation() //TODO LATER NO RESULT
+        null -> {} //TODO LATER SHOW SEARCH ANIMATION
     }
 }
 
@@ -221,7 +220,7 @@ fun LazyListScope.ShowCreators(state: SearchScreenState<List<Creator>?>) {
 }
 
 @Composable
-fun ShowCharacters(state: SearchScreenState<List<Character>?>) {
+fun ShowCharacters(state: SearchScreenState<List<Character>?>?) {
     HandleState(state = state) {
         Log.i("ZZZ",it.toString())
         LazyColumn{

@@ -31,11 +31,13 @@ class SearchViewModel @Inject constructor(
             takeIf { filterType.value == FilterType.CHARACTER && characterName.isNotBlank() }?.let {
                 collect(searchCharacterUseCase.invoke(characterName))
             }
+            emitNullIfEmpty(this,characterName)
         }
         addSource(filterType.asLiveData()){ currentFilterType ->
             takeIf { currentFilterType == FilterType.CHARACTER && search.value.isNotBlank()}?.let {
                 collect(searchCharacterUseCase.invoke(search.value))
             }
+            emitNullIfEmpty(this,search.value)
         }
     }
 
@@ -44,11 +46,13 @@ class SearchViewModel @Inject constructor(
             takeIf { filterType.value == FilterType.CREATOR && creatorName.isNotBlank() }?.let {
                 collect(searchCreatorUseCase.invoke(creatorName))
             }
+            emitNullIfEmpty(this,creatorName)
         }
         addSource(filterType.asLiveData()){ currentFilterType ->
             takeIf { currentFilterType == FilterType.CREATOR  && search.value.isNotBlank()}?.let {
                  collect(searchCreatorUseCase.invoke(search.value))
             }
+            emitNullIfEmpty(this,search.value)
         }
     }
 
@@ -57,11 +61,13 @@ class SearchViewModel @Inject constructor(
             takeIf { filterType.value == FilterType.SERIES && seriesTitle.isNotBlank()}?.let {
                 collect(searchSeriesUseCase.invoke(seriesTitle))
             }
+            emitNullIfEmpty(this,seriesTitle)
         }
         addSource(filterType.asLiveData()){ currentFilterType ->
             takeIf { currentFilterType == FilterType.SERIES && search.value.isNotBlank()}?.let {
                 collect(searchSeriesUseCase.invoke(search.value))
             }
+            emitNullIfEmpty(this,search.value)
         }
     }
 
@@ -70,6 +76,12 @@ class SearchViewModel @Inject constructor(
             flow.collect{
                 this@collect.postValue(it)
             }
+        }
+    }
+
+    private fun  <T> emitNullIfEmpty(liveData: MediatorLiveData<T?>, keyWord: String){
+        keyWord.takeIf { it.isEmpty() }?.let {
+            liveData.postValue(null)
         }
     }
 }

@@ -5,7 +5,6 @@ import com.shahad.app.marvelapp.data.local.mappers.CharacterEntityMapper
 import com.shahad.app.marvelapp.data.local.mappers.CreatorEntityMapper
 import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
 import com.shahad.app.marvelapp.data.local.mappers.SeriesEntityMapper
-import com.shahad.app.marvelapp.data.remote.response.CharacterDto
 import com.shahad.app.marvelapp.data.remote.response.CreatorDto
 import com.shahad.app.marvelapp.data.repositories.CreatorsRepository
 import com.shahad.app.marvelapp.domain.mappers.CharacterMapper
@@ -16,7 +15,6 @@ import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.util.toImageUrl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class FakeCreatorRepository: CreatorsRepository{
 
@@ -66,14 +64,19 @@ class FakeCreatorRepository: CreatorsRepository{
     }
 
     override fun searchCreator(keyWord: String): Flow<SearchScreenState<List<Creator>?>?> {
-        val creators = remoteCreators.values.filter { it.name.matches(keyWord.toRegex()) }.map{
-            Creator(it.id,it.name,it.thumbnail.toImageUrl())
-        }
-        return if(shouldReturnError){
-            flow { SearchScreenState.Error("fake error") }
-        }else {
-            flow {
-                emit(SearchScreenState.Success(creators))
+        return flow {
+            emit(SearchScreenState.Loading)
+            val creators = remoteCreators.values.filter { it.name.contains(keyWord) }.map{
+                Creator(it.id,it.name,it.thumbnail.toImageUrl())
+            }
+            if(shouldReturnError){
+                emit(SearchScreenState.Error("fake error"))
+            }else {
+                takeIf { creators.isNotEmpty() }?.let {
+                    emit(SearchScreenState.Success(creators))
+                } ?: run {
+                    emit(SearchScreenState.Empty)
+                }
             }
         }
     }

@@ -15,7 +15,6 @@ import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.util.toImageUrl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class FakeCharacterRepository: CharactersRepository{
 
@@ -61,14 +60,20 @@ class FakeCharacterRepository: CharactersRepository{
     }
 
     override fun searchCharacter(keyWord: String): Flow<SearchScreenState<List<Character>?>?> {
-        val characters = remoteCharacters.values.filter { it.name.matches(keyWord.toRegex()) }.map{
-            Character(it.id,it.name,it.thumbnail.toImageUrl(),it.description ?: "No Description")
-        }
-        return if(shouldReturnError){
-            flow { SearchScreenState.Error("fake error") }
-        }else {
-            flow {
-                emit(SearchScreenState.Success(characters))
+
+        return  flow {
+            emit(SearchScreenState.Loading)
+            val characters = remoteCharacters.values.filter { it.name.contains(keyWord)}.map{
+                Character(it.id,it.name,it.thumbnail.toImageUrl(),it.description ?: "No Description")
+            }
+            if(shouldReturnError){
+                emit(SearchScreenState.Error("fake error"))
+            }else {
+                takeIf { characters.isNotEmpty() }?.let {
+                    emit(SearchScreenState.Success(characters))
+                } ?: run {
+                    emit(SearchScreenState.Empty)
+                }
             }
         }
     }

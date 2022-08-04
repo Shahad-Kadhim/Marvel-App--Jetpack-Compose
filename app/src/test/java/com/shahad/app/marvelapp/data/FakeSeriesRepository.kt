@@ -65,16 +65,25 @@ class FakeSeriesRepository: SeriesRepository{
     }
 
     override fun searchSeries(keyWord: String): Flow<SearchScreenState<List<Series>?>?> {
-        val series = remoteSeries.values.filter { it.title.matches(keyWord.toRegex()) }.map{
-            Series(id = it.id, title = it.title, imageUrl = it.thumbnail.toImageUrl(), rating = "5")
-        }
-        return if(shouldReturnError){
-            flow { SearchScreenState.Error("fake error") }
-        }else {
-            flow {
-                emit(SearchScreenState.Success(series))
+        return flow {
+            emit(SearchScreenState.Loading)
+            val series = remoteSeries.values.filter { it.title.contains(keyWord) }.map {
+                Series(
+                    id = it.id,
+                    title = it.title,
+                    imageUrl = it.thumbnail.toImageUrl(),
+                    rating = "5"
+                )
+            }
+            if (shouldReturnError) {
+                emit(SearchScreenState.Error("fake error"))
+            } else {
+                takeIf { series.isNotEmpty() }?.let {
+                    emit(SearchScreenState.Success(series))
+                } ?: run {
+                    emit(SearchScreenState.Empty)
+                }
             }
         }
     }
-
 }
