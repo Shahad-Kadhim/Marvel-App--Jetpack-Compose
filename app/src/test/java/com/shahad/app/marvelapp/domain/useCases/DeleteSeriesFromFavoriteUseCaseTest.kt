@@ -8,8 +8,7 @@ import com.shahad.app.marvelapp.domain.models.Series
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -51,5 +50,23 @@ internal class DeleteSeriesFromFavoriteUseCaseTest{
         //Then
         assertThat((favoriteSeries as FavouriteScreenState.Success).data, not(hasItem(secondSeries)))
     }
+
+
+    @Test
+    fun clearFavoriteSeries_returnEmpty() = runTest{
+        //Given
+        val firstSeries = Series(id = 1, title = "s1", imageUrl = "image.jpg")
+        val secondSeries = Series(id = 2, title = "s2", imageUrl = "image.jpg")
+
+        //When
+        repository.addFavouriteSeries(firstSeries)
+        repository.addFavouriteSeries(secondSeries)
+        deleteSeriesFromFavoriteUseCase.clearFavouriteSeries()
+        val favoriteSeries = repository.getFavoriteSeries().last()
+
+        //Then
+        assertThat(favoriteSeries::class, `is`(FavouriteScreenState.Empty::class))
+    }
+
 
 }

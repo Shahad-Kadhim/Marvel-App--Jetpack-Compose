@@ -9,4 +9,5 @@ class DeleteSeriesFromFavoriteUseCase @Inject constructor(
     suspend operator fun invoke(seriesId: Int)=
         seriesRepository.deleteFavouriteSeries(seriesId)
 
+    suspend fun clearFavouriteSeries() = seriesRepository.clearFavoriteSeries()
 }

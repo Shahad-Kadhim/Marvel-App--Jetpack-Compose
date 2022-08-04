@@ -30,6 +30,7 @@ import com.shahad.app.marvelapp.data.HomeScreenState
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
+import com.shahad.app.marvelapp.ui.SeriesItem
 import com.shahad.app.marvelapp.ui.search.ErrorConnectionAnimation
 import com.shahad.app.marvelapp.ui.search.LoadingAnimation
 import com.shahad.app.marvelapp.ui.theme.Spacing
@@ -236,47 +237,6 @@ fun <T> Section(
     }
 }
 
-
-
-@Composable
-fun SeriesItem(series: Series){
-    Card(
-        modifier = Modifier
-            .padding(horizontal = MaterialTheme.Spacing.tiny)
-            .height(130.dp)
-            .width(130.dp),
-        shape = RoundedCornerShape(8.dp)
-    ){
-        Box(Modifier.fillMaxSize()){
-            AsyncImage(
-                model= series.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Fit
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xB3F5F2F4), Color(0x80080708))
-                        )
-                    )
-            ){
-                Text(
-                    text = series.title,
-                    style =TextStyle(
-                        fontSize = 12.sp
-                    ),
-                    modifier = Modifier
-                        .padding(MaterialTheme.Spacing.small, MaterialTheme.Spacing.tiny)
-                        .fillMaxWidth(),
-                    maxLines = 1
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun TitleSection(title: String, onClickSeeMore: () -> Unit){

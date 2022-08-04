@@ -1,5 +1,6 @@
 package com.shahad.app.marvelapp.ui.main
 
+import android.annotation.SuppressLint
 import androidx.compose.material.*
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,6 +20,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.shahad.app.marvelapp.ui.favorite.FavoriteScreen
+import com.shahad.app.marvelapp.ui.favorite.FavoriteViewModel
 import com.shahad.app.marvelapp.ui.home.Home
 import com.shahad.app.marvelapp.ui.home.HomeViewModel
 import com.shahad.app.marvelapp.ui.search.Search
@@ -40,6 +43,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     private fun MainScreen(navController: NavHostController) {
         val items = listOf<Screen>(Screen.HomeScreen, Screen.SearchScreen, Screen.FavouriteScreen)
@@ -92,7 +96,8 @@ class MainActivity : ComponentActivity() {
                 composable(
                     route = Screen.FavouriteScreen.route,
                     content = {
-
+                        val viewModel: FavoriteViewModel by viewModels()
+                        FavoriteScreen(navController = navController, viewModel = viewModel)
                     }
                 )
 
