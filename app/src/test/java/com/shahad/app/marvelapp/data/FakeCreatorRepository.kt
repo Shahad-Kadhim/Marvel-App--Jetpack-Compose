@@ -7,10 +7,7 @@ import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
 import com.shahad.app.marvelapp.data.local.mappers.SeriesEntityMapper
 import com.shahad.app.marvelapp.data.remote.response.CreatorDto
 import com.shahad.app.marvelapp.data.repositories.CreatorsRepository
-import com.shahad.app.marvelapp.domain.mappers.CharacterMapper
-import com.shahad.app.marvelapp.domain.mappers.CreatorMapper
-import com.shahad.app.marvelapp.domain.mappers.DomainMapper
-import com.shahad.app.marvelapp.domain.mappers.SeriesMapper
+import com.shahad.app.marvelapp.domain.mappers.*
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.util.toImageUrl
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +18,7 @@ class FakeCreatorRepository: CreatorsRepository{
 
     var domainMapper: DomainMapper = DomainMapper(
         CharacterMapper(), SeriesMapper(),
-        CreatorMapper()
+        CreatorMapper(), FavoriteSeriesMapper()
     )
 
     var localMapper: LocalMappers = LocalMappers(

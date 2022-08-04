@@ -3,6 +3,7 @@ package com.shahad.app.marvelapp.data.local
 import androidx.room.*
 import com.shahad.app.marvelapp.data.local.entities.CharacterEntity
 import com.shahad.app.marvelapp.data.local.entities.CreatorEntity
+import com.shahad.app.marvelapp.data.local.entities.FavoriteEntity
 import com.shahad.app.marvelapp.data.local.entities.SeriesEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -26,4 +27,19 @@ interface MarvelDao{
 
     @Query("SELECT * From CreatorEntity")
     fun getCreator(): Flow<List<CreatorEntity>>
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFavouriteSeries(series: FavoriteEntity)
+
+    @Query("DELETE From FavoriteEntity Where  id = :seriesId")
+    suspend fun deleteFavouriteSeries(seriesId: Int)
+
+    @Query("SELECT * From FavoriteEntity")
+    fun getFavoriteSeries(): Flow<List<FavoriteEntity>>
+
+    @Query("DELETE From FavoriteEntity")
+    suspend fun clearFavoriteSeries()
+
+
 }

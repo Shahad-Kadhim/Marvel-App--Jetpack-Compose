@@ -1,5 +1,6 @@
 package com.shahad.app.marvelapp.data
 
+import com.shahad.app.marvelapp.data.local.entities.FavoriteEntity
 import com.shahad.app.marvelapp.data.local.entities.SeriesEntity
 import com.shahad.app.marvelapp.data.local.mappers.CharacterEntityMapper
 import com.shahad.app.marvelapp.data.local.mappers.CreatorEntityMapper
@@ -7,10 +8,7 @@ import com.shahad.app.marvelapp.data.local.mappers.LocalMappers
 import com.shahad.app.marvelapp.data.local.mappers.SeriesEntityMapper
 import com.shahad.app.marvelapp.data.remote.response.SeriesDto
 import com.shahad.app.marvelapp.data.repositories.SeriesRepository
-import com.shahad.app.marvelapp.domain.mappers.CharacterMapper
-import com.shahad.app.marvelapp.domain.mappers.CreatorMapper
-import com.shahad.app.marvelapp.domain.mappers.DomainMapper
-import com.shahad.app.marvelapp.domain.mappers.SeriesMapper
+import com.shahad.app.marvelapp.domain.mappers.*
 import com.shahad.app.marvelapp.domain.models.Series
 import com.shahad.app.marvelapp.util.toImageUrl
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +19,7 @@ class FakeSeriesRepository: SeriesRepository{
 
     var domainMapper: DomainMapper = DomainMapper(
         CharacterMapper(), SeriesMapper(),
-        CreatorMapper()
+        CreatorMapper(), FavoriteSeriesMapper()
     )
 
     var localMapper: LocalMappers = LocalMappers(
@@ -35,6 +33,8 @@ class FakeSeriesRepository: SeriesRepository{
         Pair(1,SeriesDto(id = 1, title = "s1", description = "d1", modified = "2020/2/1")),
         Pair(2,SeriesDto(id = 2, title = "s2", description = "d2", modified = "2020/2/1")),
     )
+
+    private  val favoriteSeries =  mutableMapOf<Int,FavoriteEntity>()
 
     private val localSeries = mutableMapOf<Int,SeriesEntity>()
 
@@ -85,5 +85,28 @@ class FakeSeriesRepository: SeriesRepository{
                 }
             }
         }
+    }
+
+    override fun getFavoriteSeries(): Flow<FavouriteScreenState<List<Series>>> {
+        return flow {
+            emit(FavouriteScreenState.Loading)
+            favoriteSeries.takeIf { it.isNotEmpty() }?.let {
+                emit(FavouriteScreenState.Success(it.values.map(domainMapper.favoriteSeriesMapper::map)))
+            } ?: run{
+                emit(FavouriteScreenState.Empty)
+            }
+        }
+    }
+
+    override suspend fun addFavouriteSeries(series: Series) {
+        favoriteSeries[series.id] = domainMapper.favoriteSeriesMapper.inverseMap(series)
+    }
+
+    override suspend fun deleteFavouriteSeries(seriesId: Int) {
+        favoriteSeries.remove(seriesId)
+    }
+
+    override suspend fun clearFavoriteSeries() {
+        favoriteSeries.clear()
     }
 }

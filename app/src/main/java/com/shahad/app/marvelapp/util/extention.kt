@@ -2,7 +2,9 @@ package com.shahad.app.marvelapp.util
 
 import com.shahad.app.marvelapp.data.HomeScreenState
 import com.shahad.app.marvelapp.data.SearchScreenState
+import com.shahad.app.marvelapp.data.local.entities.FavoriteEntity
 import com.shahad.app.marvelapp.data.remote.response.Thumbnail
+import com.shahad.app.marvelapp.domain.models.Series
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -71,5 +73,3 @@ fun <T> HomeScreenState<T>.showIfSuccess(show:  (HomeScreenState.Success<T>) -> 
         else -> {}
     }
 }
-
-
