@@ -5,6 +5,7 @@ import com.shahad.app.marvelapp.MainCoroutineRule
 import com.shahad.app.marvelapp.data.FakeSeriesRepository
 import com.shahad.app.marvelapp.data.FavouriteScreenState
 import com.shahad.app.marvelapp.domain.models.Series
+import com.shahad.app.marvelapp.util.setIsFavourite
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
@@ -47,7 +48,7 @@ internal class AddSeriesToFavoriteUseCaseTest{
 
         //Then
         assertThat(favoriteSeries::class,`is`(FavouriteScreenState.Success::class))
-        assertThat((favoriteSeries as FavouriteScreenState.Success).data, hasItem(series))
+        assertThat((favoriteSeries as FavouriteScreenState.Success).data, hasItem(series.setIsFavourite(true)))
 
     }
 

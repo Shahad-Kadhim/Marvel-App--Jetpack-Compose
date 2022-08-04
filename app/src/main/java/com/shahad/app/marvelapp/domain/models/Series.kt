@@ -5,5 +5,5 @@ data class Series (
     val rating: String? = null,
     val title: String,
     val imageUrl: String,
-    val isFavourite: Boolean = false
+    var isFavourite: Boolean = false
 )

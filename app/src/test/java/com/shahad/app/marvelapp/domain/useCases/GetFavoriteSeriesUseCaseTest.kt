@@ -5,6 +5,7 @@ import com.shahad.app.marvelapp.MainCoroutineRule
 import com.shahad.app.marvelapp.data.FakeSeriesRepository
 import com.shahad.app.marvelapp.data.FavouriteScreenState
 import com.shahad.app.marvelapp.domain.models.Series
+import com.shahad.app.marvelapp.util.setIsFavourite
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
@@ -38,7 +39,7 @@ internal class GetFavoriteSeriesUseCaseTest{
 
 
     @Test
-    fun getFavouriteSeries_NoFavourite_ReturnEmpty() = runTest{
+    fun getFavouriteSeries_ReturnSeriesList() = runTest{
         //Given
         val series =Series(id = 1, title = "s1", imageUrl = "image.jpg")
         repository.addFavouriteSeries(series)
@@ -48,9 +49,18 @@ internal class GetFavoriteSeriesUseCaseTest{
 
         //Then
         assertThat(favoriteSeries::class, `is`(FavouriteScreenState.Success::class))
-        assertThat((favoriteSeries as FavouriteScreenState.Success).data, hasItem(series))
+        assertThat((favoriteSeries as FavouriteScreenState.Success).data, hasItem(series.setIsFavourite(true)))
 
+    }
 
+    @Test
+    fun getFavouriteSeries_NoFavorite_ReturnEmpty() = runTest{
+
+        //When
+        val favoriteSeries = getFavoriteSeriesUseCase.invoke().last()
+
+        //Then
+        assertThat(favoriteSeries::class, `is`(FavouriteScreenState.Empty::class))
     }
 
     @Test

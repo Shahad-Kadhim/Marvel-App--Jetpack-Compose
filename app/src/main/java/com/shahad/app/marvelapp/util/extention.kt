@@ -73,3 +73,8 @@ fun <T> HomeScreenState<T>.showIfSuccess(show:  (HomeScreenState.Success<T>) -> 
         else -> {}
     }
 }
+
+fun Series.setIsFavourite(value: Boolean) =
+    this.apply {
+        isFavourite = value
+    }
