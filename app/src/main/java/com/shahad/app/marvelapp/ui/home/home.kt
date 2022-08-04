@@ -55,7 +55,7 @@ fun Home(
                 series?.let { state ->
                     item{
                         HandleHomeState(state = state) {
-                            SeriesRecycle(series = it)
+                            SeriesRecycle(series = it, viewModel)
                         }
                     }
                 }
@@ -204,12 +204,24 @@ fun CreatorItem(creator: Creator) {
 }
 
 @Composable
-fun SeriesRecycle(series: List<Series>) {
+fun SeriesRecycle(series: List<Series>,viewModel: HomeViewModel) {
     Section(
         sectionTitle = "Series",
         items = series
     ){
-        SeriesItem(series = it)
+        SeriesItem(
+            series = it,
+            onClickFavorite = {
+                if(it.isFavourite){
+                    viewModel.deleteSeriesToFavorite(it.id)
+                }else {
+                    viewModel.addSeriesToFavorite(it)
+                }
+            },
+            onCLickItem = {
+                // nav to details
+            }
+        )
     }
 }
 

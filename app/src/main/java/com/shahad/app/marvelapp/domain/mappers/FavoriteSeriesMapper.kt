@@ -12,12 +12,13 @@ class FavoriteSeriesMapper @Inject constructor(): Mapper<FavoriteEntity, Series>
             id = input.id,
             title = input.title,
             imageUrl = input.imageUrl,
+            isFavourite = true
         )
 
     fun inverseMap(input: Series): FavoriteEntity =
         FavoriteEntity(
             id = input.id,
             title = input.title,
-            imageUrl = input.imageUrl
+            imageUrl = input.imageUrl,
         )
 }

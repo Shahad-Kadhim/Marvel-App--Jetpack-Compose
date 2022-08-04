@@ -12,6 +12,7 @@ class SeriesMapper @Inject constructor(): Mapper<SeriesEntity, Series> {
             input.rating,
             input.title,
             input.imageUrl,
+            isFavourite = true
         )
 
 }

@@ -7,9 +7,7 @@ import com.shahad.app.marvelapp.data.HomeScreenState
 import com.shahad.app.marvelapp.domain.models.Character
 import com.shahad.app.marvelapp.domain.models.Creator
 import com.shahad.app.marvelapp.domain.models.Series
-import com.shahad.app.marvelapp.domain.useCases.GetCharactersUseCase
-import com.shahad.app.marvelapp.domain.useCases.GetCreatorsUseCase
-import com.shahad.app.marvelapp.domain.useCases.GetSeriesUseCase
+import com.shahad.app.marvelapp.domain.useCases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,6 +17,8 @@ class HomeViewModel @Inject constructor(
     private val charactersUseCase: GetCharactersUseCase,
     private val seriesUseCase: GetSeriesUseCase,
     private val creatorsUseCase: GetCreatorsUseCase,
+    private val addSeriesToFavoriteUseCase: AddSeriesToFavoriteUseCase,
+    private val deleteSeriesFromFavoriteUseCase: DeleteSeriesFromFavoriteUseCase
 ): ViewModel() {
 
     val series = MutableLiveData<HomeScreenState<List<Series>?>?>()
@@ -52,6 +52,18 @@ class HomeViewModel @Inject constructor(
             charactersUseCase.invoke(10).collect {
                 characters.value = it
             }
+        }
+    }
+
+    fun addSeriesToFavorite(series: Series){
+        viewModelScope.launch {
+            addSeriesToFavoriteUseCase.invoke(series)
+        }
+    }
+
+    fun deleteSeriesToFavorite(seriesId: Int){
+        viewModelScope.launch {
+            deleteSeriesFromFavoriteUseCase.invoke(seriesId)
         }
     }
 }

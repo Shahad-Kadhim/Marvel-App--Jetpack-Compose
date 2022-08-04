@@ -74,7 +74,7 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel){
                 when(state){
                     FavouriteScreenState.Empty -> ErrorConnectionAnimation() //TODO CHANGE IT LATER
                     FavouriteScreenState.Loading -> LoadingAnimation()
-                    is FavouriteScreenState.Success -> SeriesGridRecycle((state as FavouriteScreenState.Success<List<Series>>).data)
+                    is FavouriteScreenState.Success -> SeriesGridRecycle((state as FavouriteScreenState.Success<List<Series>>).data,viewModel)
                     else -> {}
                 }
 
@@ -84,14 +84,22 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel){
 }
 
 @Composable
-fun SeriesGridRecycle(series: List<Series>){
+fun SeriesGridRecycle(series: List<Series>, viewModel: FavoriteViewModel){
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny)
     ) {
         items(series) {
-            SeriesItem(it)
+            SeriesItem(
+                series =it,
+                onCLickItem = {
+
+                },
+                onClickFavorite = {
+                    viewModel.deleteSeries(it.id)
+                }
+            )
         }
     }
 
