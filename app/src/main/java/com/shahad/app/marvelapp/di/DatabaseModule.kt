@@ -2,8 +2,8 @@ package com.shahad.app.marvelapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.shahad.app.marvelapp.data.local.MarvelDatabase
-import com.shahad.app.marvelapp.data.local.MarvelDao
+import com.shahad.app.data.local.MarvelDao
+import com.shahad.app.data.local.MarvelDatabase
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext

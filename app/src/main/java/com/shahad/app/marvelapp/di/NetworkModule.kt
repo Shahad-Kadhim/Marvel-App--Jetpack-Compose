@@ -1,9 +1,9 @@
 package com.shahad.app.marvelapp.di
 
 import com.google.gson.GsonBuilder
-import com.shahad.app.marvelapp.BuildConfig
-import com.shahad.app.marvelapp.data.remote.AuthInterceptor
-import com.shahad.app.marvelapp.data.remote.MarvelService
+import com.shahad.app.data.BuildConfig.BASE_URL
+import com.shahad.app.data.remote.AuthInterceptor
+import com.shahad.app.data.remote.MarvelService
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -25,7 +25,7 @@ object NetworkModule {
     ): MarvelService {
         return Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(BASE_URL)
             .addConverterFactory(gsonConverterFactory)
             .build()
             .create(MarvelService::class.java)

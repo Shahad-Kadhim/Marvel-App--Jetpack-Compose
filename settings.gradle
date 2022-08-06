@@ -14,3 +14,9 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Marvel App"
 include ':app'
+include ':core'
+include ':repositories'
+include ':useCases'
+include ':viewModels'
+include ':ui'
+include ':data'

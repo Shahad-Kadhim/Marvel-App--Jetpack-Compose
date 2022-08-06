@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="1.7">
+      <module name="Marvel_App.app" target="11" />
+      <module name="Marvel_App.data" target="11" />
+      <module name="Marvel_App.dataM" target="11" />
+      <module name="Marvel_App.repositories" target="11" />
+      <module name="Marvel_App.ui" target="11" />
+      <module name="Marvel_App.useCases" target="11" />
+      <module name="Marvel_App.viewModels" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -11,6 +11,12 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/data" />
+            <option value="$PROJECT_DIR$/repositories" />
+            <option value="$PROJECT_DIR$/ui" />
+            <option value="$PROJECT_DIR$/useCases" />
+            <option value="$PROJECT_DIR$/viewModels" />
           </set>
         </option>
       </GradleProjectSettings>
