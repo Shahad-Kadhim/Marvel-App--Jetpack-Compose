@@ -86,7 +86,8 @@ fun SeriesGridRecycle(series: List<Series>, viewModel: FavoriteViewModel){
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny)
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
+        modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium)
     ) {
         items(series) {
             SeriesItem(
