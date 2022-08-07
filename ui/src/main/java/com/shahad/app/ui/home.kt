@@ -104,58 +104,6 @@ fun <T> HandleHomeState(
         }
     }
 }
-@Composable
-fun CharacterItem(
-    character: Character,
-) {
-    Box(
-        modifier = Modifier
-            .padding(
-                horizontal = MaterialTheme.Spacing.medium,
-                vertical = MaterialTheme.Spacing.tiny
-            )
-            .fillMaxWidth()
-            .clickable {
-
-            }
-    ){
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colors.secondary)
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(MaterialTheme.Spacing.medium)
-                .padding(end = 100.dp)
-                .align(Alignment.BottomCenter)
-        ) {
-            Text(
-                text = character.name,
-                fontSize = 14.sp,
-                maxLines = 1,
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.Spacing.tiny))
-
-            Text(
-                text = character.description.takeIf{it.isNotBlank()} ?: "No Description Available",
-                fontSize = 12.sp,
-                maxLines = 2,
-            )
-        }
-        AsyncImage(
-            model = character.image,
-            contentDescription = character.name,
-            modifier = Modifier
-                .padding(end = MaterialTheme.Spacing.large, bottom = MaterialTheme.Spacing.medium)
-                .height(104.dp)
-                .width(86.dp)
-                .align(Alignment.TopEnd)
-                .clip(RoundedCornerShape(8.dp))
-                .border(1.dp, MaterialTheme.colors.onBackground, RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.FillBounds
-        )
-    }
-}
 
 @Composable
 fun CreatorRecycle(creators: List<Creator>) {
@@ -165,37 +113,6 @@ fun CreatorRecycle(creators: List<Creator>) {
     ) {
         CreatorItem(it)
     }
-}
-
-@Composable
-fun CreatorItem(creator: Creator) {
-    Column(
-        modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.tiny)
-    ) {
-        //TODO change image
-//        AsyncImage(
-//            model = creator.imageUrl,
-        Image(
-            painter = painterResource(id = R.drawable.test_image),
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-        )
-        Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small))
-        Text(
-            text = creator.name,
-            fontSize = 12.sp,
-            color = MaterialTheme.colors.onBackground,
-            modifier = Modifier
-                .width(100.dp)
-                .padding(horizontal = MaterialTheme.Spacing.medium),
-            maxLines = 1,
-            textAlign = TextAlign.Center
-        )
-
-    }
-
 }
 
 @Composable

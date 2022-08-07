@@ -1,4 +1,4 @@
-package com.shahad.app.usecases.repositories
+package com.shahad.app.fakerepositories
 
 
 import com.shahad.app.core.SearchScreenState

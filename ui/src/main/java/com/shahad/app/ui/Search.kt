@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -141,10 +144,10 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
                         ShowCharacters(characters)
                     }
                     FilterType.CREATOR -> {
-//                            ShowCreators(creators)
+                            ShowCreators(creators)
                     }
                     FilterType.SERIES -> {
-//                            ShowSeries(series)
+                            ShowSeries(series)
                     }
                 }
             }
@@ -154,10 +157,24 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
 }
 
 @Composable
-fun LazyListScope.ShowSeries(state: SearchScreenState<List<Series>?>?) {
+fun ShowSeries(state: SearchScreenState<List<Series>?>?) {
     HandleState(state = state) {
-        this.items(it){
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny)
+        ) {
+            items(it) {
+                SeriesItem(
+                    series =it,
+                    onCLickItem = {
 
+                    },
+                    onClickFavorite = {
+                        
+                    }
+                )
+            }
         }
     }
 }
@@ -175,45 +192,22 @@ fun <T> HandleState(
                 showResult(it)
             }
         }
-        SearchScreenState.Empty -> ErrorConnectionAnimation() //TODO LATER NO RESULT
-        null -> {} //TODO LATER SHOW SEARCH ANIMATION
+        SearchScreenState.Empty -> NotFoundAnimation()
+        null -> SearchAnimation()
     }
 }
 
 @Composable
-fun BasicLottie(
-    @RawRes lottieId: Int,
-    modifier: Modifier =Modifier
-){
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieId))
-        LottieAnimation(
-            composition = composition,
-            isPlaying = true,
-            iterations = LottieConstants.IterateForever,
-            modifier = modifier
-                .width(172.dp)
-                .height(172.dp),
-        )
-    }
-}
-@Composable
-fun LoadingAnimation(){
-    BasicLottie(lottieId = R.raw.loading_lottie)
-}
-
-@Composable
-fun ErrorConnectionAnimation(){
-    BasicLottie(lottieId = R.raw.error)
-}
-@Composable
-fun LazyListScope.ShowCreators(state: SearchScreenState<List<Creator>?>) {
+fun ShowCreators(state: SearchScreenState<List<Creator>?>?) {
     HandleState(state = state) {
-        this.items(it){
-
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny)
+        ) {
+            items(it) {
+                CreatorItem(creator = it)
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.shahad.app.usecases.repositories
+package com.shahad.app.fakerepositories
 
 import com.shahad.app.core.SearchScreenState
 import com.shahad.app.data.local.entities.CharacterEntity
@@ -7,8 +7,8 @@ import com.shahad.app.data.remote.response.CharacterDto
 import com.shahad.app.repositories.mappers.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import com.shahad.app.core.models.Character
 import com.shahad.app.data.toImageUrl
+import com.shahad.app.core.models.Character
 import com.shahad.app.repositories.repositories.CharactersRepository
 
 class FakeCharacterRepository: CharactersRepository {

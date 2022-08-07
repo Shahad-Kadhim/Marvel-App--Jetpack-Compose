@@ -5,6 +5,7 @@
       <module name="Marvel_App.app" target="11" />
       <module name="Marvel_App.data" target="11" />
       <module name="Marvel_App.dataM" target="11" />
+      <module name="Marvel_App.fakeRepositories" target="11" />
       <module name="Marvel_App.repositories" target="11" />
       <module name="Marvel_App.ui" target="11" />
       <module name="Marvel_App.useCases" target="11" />

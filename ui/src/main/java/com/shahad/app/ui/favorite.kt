@@ -62,7 +62,7 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel){
                         modifier = Modifier
                             .padding(vertical = MaterialTheme.Spacing.small)
                             .clickable {
-                                 viewModel.clearFavoriteSeries()
+                                viewModel.clearFavoriteSeries()
                             },
                         colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
                     )
@@ -70,7 +70,7 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel){
                 }
 
                 when(state){
-                    FavouriteScreenState.Empty -> ErrorConnectionAnimation() //TODO CHANGE IT LATER
+                    FavouriteScreenState.Empty -> NotFoundAnimation()
                     FavouriteScreenState.Loading -> LoadingAnimation()
                     is FavouriteScreenState.Success<*> -> SeriesGridRecycle((state as FavouriteScreenState.Success<List<Series>>).data,viewModel)
                     else -> {}

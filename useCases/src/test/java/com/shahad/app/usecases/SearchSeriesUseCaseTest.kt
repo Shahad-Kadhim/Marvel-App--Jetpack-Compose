@@ -2,7 +2,7 @@ package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.shahad.app.core.SearchScreenState
-import com.shahad.app.usecases.repositories.FakeSeriesRepository
+import com.shahad.app.fakerepositories.FakeSeriesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
