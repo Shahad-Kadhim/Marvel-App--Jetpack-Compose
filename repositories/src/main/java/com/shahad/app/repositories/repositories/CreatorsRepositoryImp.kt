@@ -1,7 +1,6 @@
 package com.shahad.app.repositories.repositories
 
 
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.data.local.MarvelDao
 import com.shahad.app.data.mappers.LocalMappers
 import com.shahad.app.data.remote.MarvelService
@@ -9,7 +8,6 @@ import com.shahad.app.data.toImageUrl
 import com.shahad.app.repositories.mappers.DomainMapper
 import com.shahad.app.repositories.convertTo
 import com.shahad.app.core.models.Creator
-import com.shahad.app.repositories.toModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -39,10 +37,14 @@ class CreatorsRepositoryImp @Inject constructor(
     }
 
 
-    override fun searchCreator(keyWord: String): Flow<SearchScreenState<List<Creator>?>?> {
-        return wrapWithFlowOfSearchState { api.getCreators(searchKeyWord = keyWord) }.toModel {
-            Creator(it.id,it.name,it.thumbnail.toImageUrl())
-        }
+    override  fun searchCreator(keyWord: String): Flow<List<Creator>?> {
+        return wrapWithFlow(
+            request = { api.getCharacters(searchKeyWord = keyWord) },
+            mapper = {
+                Creator(it.id,it.name,it.thumbnail.toImageUrl())
+            }
+        )
+
     }
 
 

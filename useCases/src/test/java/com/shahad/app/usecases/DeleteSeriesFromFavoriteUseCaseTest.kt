@@ -1,9 +1,8 @@
 package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.shahad.app.core.FavouriteScreenState
 import com.shahad.app.core.models.Series
-import com.shahad.app.fakerepositories.FakeSeriesRepository
+import com.shahad.app.usecases.fakeRepositories.FakeSeriesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
@@ -47,7 +46,7 @@ internal class DeleteSeriesFromFavoriteUseCaseTest{
         val favoriteSeries = repository.getFavoriteSeries().last()
 
         //Then
-        assertThat((favoriteSeries as FavouriteScreenState.Success).data, not(hasItem(secondSeries)))
+        assertThat(favoriteSeries, not(hasItem(secondSeries)))
     }
 
 
@@ -64,7 +63,7 @@ internal class DeleteSeriesFromFavoriteUseCaseTest{
         val favoriteSeries = repository.getFavoriteSeries().last()
 
         //Then
-        assertThat(favoriteSeries::class, `is`(FavouriteScreenState.Empty::class))
+        assertThat(favoriteSeries.isEmpty(), `is`(true))
     }
 
 

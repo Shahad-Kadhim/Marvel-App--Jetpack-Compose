@@ -34,7 +34,6 @@ dependencies {
 
     implementation (project(':useCases'))
     implementation (project(':core'))
-    testImplementation(project(':fakeRepositories'))
 
 
     //dagger hilt

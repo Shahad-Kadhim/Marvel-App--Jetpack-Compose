@@ -1,7 +1,6 @@
 package com.shahad.app.repositories.repositories
 
 import android.util.Log
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.data.remote.response.BaseResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,28 +29,20 @@ internal interface BaseRepository {
         }
     }
 
-    fun <T> wrapWithFlowOfSearchState(function: suspend () -> Response<BaseResponse<T>>): Flow<SearchScreenState<List<T>?>> {
+
+    fun <T,U> wrapWithFlow(request: suspend () -> Response<BaseResponse<T>>, mapper: (T) -> U): Flow<List<U>?> {
         return flow {
-            emit(SearchScreenState.Loading)
             try {
-                emit(checkIsSuccessful(function()))
+                emit(request().takeIf { it.isSuccessful }?.let {
+                    it.body()?.data
+                        ?.results?.map { remoteRespond ->
+                            mapper(remoteRespond)
+                        }
+                })
             } catch (e: Exception) {
-                emit(SearchScreenState.Error(e.message.toString()))
+                emit(null)
             }
         }
     }
-
-
-    private fun <T> checkIsSuccessful(response: Response<BaseResponse<T>>): SearchScreenState<List<T>?> =
-        if (response.isSuccessful) {
-            response.body()?.data
-                ?.results
-                ?.takeIf { it.isNotEmpty()}
-                ?.let {
-                    SearchScreenState.Success(it)
-                } ?: SearchScreenState.Empty
-        } else {
-            SearchScreenState.Error(response.message())
-        }
 
 }

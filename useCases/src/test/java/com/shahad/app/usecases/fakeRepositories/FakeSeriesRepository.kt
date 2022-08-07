@@ -1,7 +1,5 @@
-package com.shahad.app.fakerepositories
+package com.shahad.app.usecases.fakeRepositories
 
-import com.shahad.app.core.FavouriteScreenState
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.core.models.Series
 import com.shahad.app.data.local.entities.FavoriteEntity
 import com.shahad.app.data.local.entities.SeriesEntity
@@ -63,37 +61,27 @@ class FakeSeriesRepository: SeriesRepository {
         }
     }
 
-    override fun searchSeries(keyWord: String): Flow<SearchScreenState<List<Series>?>?> {
+    override fun searchSeries(keyWord: String): Flow<List<Series>?> {
         return flow {
-            emit(SearchScreenState.Loading)
-            val series = remoteSeries.values.filter { it.title.contains(keyWord) }.map {
-                Series(
-                    id = it.id,
-                    title = it.title,
-                    imageUrl = it.thumbnail.toImageUrl(),
-                    rating = "5"
-                )
-            }
             if (shouldReturnError) {
-                emit(SearchScreenState.Error("fake error"))
+                emit(null)
             } else {
-                takeIf { series.isNotEmpty() }?.let {
-                    emit(SearchScreenState.Success(series))
-                } ?: run {
-                    emit(SearchScreenState.Empty)
+                val series = remoteSeries.values.filter { it.title.contains(keyWord) }.map {
+                    Series(
+                        id = it.id,
+                        title = it.title,
+                        imageUrl = it.thumbnail.toImageUrl(),
+                        rating = "5"
+                    )
                 }
+                emit(series)
             }
         }
     }
 
-    override fun getFavoriteSeries(): Flow<FavouriteScreenState<List<Series>>> {
+    override fun getFavoriteSeries(): Flow<List<Series>> {
         return flow {
-            emit(FavouriteScreenState.Loading)
-            favoriteSeries.takeIf { it.isNotEmpty() }?.let {
-                emit(FavouriteScreenState.Success(it.values.map(domainMapper.favoriteSeriesMapper::map)))
-            } ?: run{
-                emit(FavouriteScreenState.Empty)
-            }
+            emit(favoriteSeries.values.map(domainMapper.favoriteSeriesMapper::map))
         }
     }
 

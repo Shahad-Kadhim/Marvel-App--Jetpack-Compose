@@ -1,7 +1,5 @@
-package com.shahad.app.fakerepositories
+package com.shahad.app.usecases.fakeRepositories
 
-
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.core.models.Creator
 import com.shahad.app.data.local.entities.CreatorEntity
 import com.shahad.app.data.mappers.*
@@ -59,20 +57,15 @@ class FakeCreatorRepository: CreatorsRepository {
         }
     }
 
-    override fun searchCreator(keyWord: String): Flow<SearchScreenState<List<Creator>?>?> {
+    override fun searchCreator(keyWord: String): Flow<List<Creator>?> {
         return flow {
-            emit(SearchScreenState.Loading)
-            val creators = remoteCreators.values.filter { it.name.contains(keyWord) }.map{
-                Creator(it.id,it.name,it.thumbnail.toImageUrl())
-            }
             if(shouldReturnError){
-                emit(SearchScreenState.Error("fake error"))
+                emit(null)
             }else {
-                takeIf { creators.isNotEmpty() }?.let {
-                    emit(SearchScreenState.Success(creators))
-                } ?: run {
-                    emit(SearchScreenState.Empty)
+                val creators = remoteCreators.values.filter { it.name.contains(keyWord) }.map{
+                    Creator(it.id,it.name,it.thumbnail.toImageUrl())
                 }
+                emit(creators)
             }
         }
     }

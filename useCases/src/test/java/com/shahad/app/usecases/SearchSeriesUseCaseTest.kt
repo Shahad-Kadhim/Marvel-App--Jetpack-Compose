@@ -2,12 +2,14 @@ package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.shahad.app.core.SearchScreenState
-import com.shahad.app.fakerepositories.FakeSeriesRepository
+import com.shahad.app.usecases.fakeRepositories.FakeSeriesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,7 +44,7 @@ internal class SearchSeriesUseCaseTest{
         val state = searchSeriesUseCase.invoke(keyWord).last()
 
         //Then
-        MatcherAssert.assertThat(state?.let { it::class }, CoreMatchers.`is`(SearchScreenState.Success::class))
+        assertThat(state::class , `is`(SearchScreenState.Success::class))
 
     }
 
@@ -55,7 +57,7 @@ internal class SearchSeriesUseCaseTest{
         val state = searchSeriesUseCase.invoke(keyWord).last()
 
         //Then
-        MatcherAssert.assertThat(state?.let { it::class }, CoreMatchers.`is`(SearchScreenState.Error::class))
+        assertThat(state::class ,`is`(SearchScreenState.Error::class))
 
     }
 
@@ -67,7 +69,7 @@ internal class SearchSeriesUseCaseTest{
         val state = searchSeriesUseCase.invoke(keyWord).last()
 
         //Then
-        MatcherAssert.assertThat(state?.let { it::class }, CoreMatchers.`is`(SearchScreenState.Empty::class))
+        assertThat(state::class , `is`(SearchScreenState.Empty::class))
 
     }
 

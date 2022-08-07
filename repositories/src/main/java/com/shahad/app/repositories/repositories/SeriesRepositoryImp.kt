@@ -1,20 +1,13 @@
 package com.shahad.app.repositories.repositories
 
-import com.shahad.app.core.FavouriteScreenState
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.data.local.MarvelDao
-import com.shahad.app.data.local.entities.FavoriteEntity
 import com.shahad.app.data.mappers.LocalMappers
 import com.shahad.app.data.remote.MarvelService
 import com.shahad.app.data.toImageUrl
 import com.shahad.app.repositories.mappers.DomainMapper
 import com.shahad.app.core.models.Series
 import com.shahad.app.repositories.convertTo
-import com.shahad.app.repositories.toModel
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SeriesRepositoryImp @Inject constructor(
@@ -41,14 +34,15 @@ class SeriesRepositoryImp @Inject constructor(
         }
     }
 
-    override fun searchSeries(keyWord: String): Flow<SearchScreenState<List<Series>?>?> {
-        return wrapWithFlowOfSearchState { api.getSeries(searchKeyWord = keyWord) }.toModel {
-            Series(it.id,it.rating,it.title,it.thumbnail.toImageUrl())
-        }
+    override fun searchSeries(keyWord: String): Flow<List<Series>?> {
+        return wrapWithFlow(
+            request = { api.getSeries(searchKeyWord = keyWord) },
+            mapper = { Series(it.id,it.rating,it.title,it.thumbnail.toImageUrl()) }
+        )
     }
 
-    override fun getFavoriteSeries(): Flow<FavouriteScreenState<List<Series>>> {
-        return wrapWithFavoriteScreenState{ dao.getFavoriteSeries() }
+    override fun getFavoriteSeries(): Flow<List<Series>> {
+        return dao.getFavoriteSeries().convertTo(domainMappers.favoriteSeriesMapper::map)
     }
 
     override suspend fun addFavouriteSeries(series: Series) {
@@ -62,21 +56,5 @@ class SeriesRepositoryImp @Inject constructor(
     override suspend fun clearFavoriteSeries() {
         dao.clearFavoriteSeries()
     }
-
-    @OptIn(FlowPreview::class)
-    private fun wrapWithFavoriteScreenState(function: () -> Flow<List<FavoriteEntity>>): Flow<FavouriteScreenState<List<Series>>> {
-        return function().flatMapConcat{ list ->
-            flow{
-                emit(FavouriteScreenState.Loading)
-                takeIf { list.isNotEmpty() }?.let {
-                    val series = list.map(domainMappers.favoriteSeriesMapper::map)
-                    emit(FavouriteScreenState.Success(series))
-                } ?: run {
-                    emit(FavouriteScreenState.Empty)
-                }
-            }
-        }
-    }
-
 
 }

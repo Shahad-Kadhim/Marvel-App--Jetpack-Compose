@@ -1,6 +1,5 @@
-package com.shahad.app.fakerepositories
+package com.shahad.app.usecases.fakeRepositories
 
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.data.local.entities.CharacterEntity
 import com.shahad.app.data.mappers.*
 import com.shahad.app.data.remote.response.CharacterDto
@@ -55,21 +54,16 @@ class FakeCharacterRepository: CharactersRepository {
         }
     }
 
-    override fun searchCharacter(keyWord: String): Flow<SearchScreenState<List<Character>?>?> {
+    override fun searchCharacter(keyWord: String): Flow<List<Character>?> {
 
         return  flow {
-            emit(SearchScreenState.Loading)
-            val characters = remoteCharacters.values.filter { it.name.contains(keyWord)}.map{
-                Character(it.id,it.name,it.thumbnail.toImageUrl(),it.description ?: "No Description")
-            }
             if(shouldReturnError){
-                emit(SearchScreenState.Error("fake error"))
+                emit(null)
             }else {
-                takeIf { characters.isNotEmpty() }?.let {
-                    emit(SearchScreenState.Success(characters))
-                } ?: run {
-                    emit(SearchScreenState.Empty)
+                val characters = remoteCharacters.values.filter { it.name.contains(keyWord)}.map{
+                    Character(it.id,it.name,it.thumbnail.toImageUrl(),it.description ?: "No Description")
                 }
+                emit(characters)
             }
         }
     }

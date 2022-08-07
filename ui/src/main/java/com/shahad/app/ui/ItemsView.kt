@@ -25,10 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.compose.*
 import com.shahad.app.core.models.Character
 import com.shahad.app.core.models.Creator
 import com.shahad.app.core.models.Series
@@ -116,6 +114,7 @@ fun BasicLottie(
             modifier = modifier
                 .width(172.dp)
                 .height(172.dp),
+            clipSpec = LottieClipSpec.Progress(0.5f, 0.75f),
         )
     }
 }

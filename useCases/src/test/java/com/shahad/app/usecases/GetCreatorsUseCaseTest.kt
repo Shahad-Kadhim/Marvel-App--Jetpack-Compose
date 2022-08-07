@@ -2,7 +2,7 @@ package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.shahad.app.core.HomeScreenState
-import com.shahad.app.fakerepositories.FakeCreatorRepository
+import com.shahad.app.usecases.fakeRepositories.FakeCreatorRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest

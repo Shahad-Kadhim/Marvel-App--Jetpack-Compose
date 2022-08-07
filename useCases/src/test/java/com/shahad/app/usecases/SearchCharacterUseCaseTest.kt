@@ -2,7 +2,7 @@ package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.shahad.app.core.SearchScreenState
-import com.shahad.app.fakerepositories.FakeCharacterRepository
+import com.shahad.app.usecases.fakeRepositories.FakeCharacterRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
@@ -41,7 +41,7 @@ internal class SearchCharacterUseCaseTest{
         val state = searchCharacterUseCase.invoke(keyWord).last()
 
         //Then
-        assertThat(state?.let { it::class },`is`(SearchScreenState.Success::class))
+        assertThat(state::class,`is`(SearchScreenState.Success::class))
 
     }
 
@@ -54,7 +54,7 @@ internal class SearchCharacterUseCaseTest{
         val state = searchCharacterUseCase.invoke(keyWord).last()
 
         //Then
-        assertThat(state?.let { it::class },`is`(SearchScreenState.Error::class))
+        assertThat(state::class ,`is`(SearchScreenState.Error::class))
 
     }
 
@@ -66,7 +66,7 @@ internal class SearchCharacterUseCaseTest{
         val state = searchCharacterUseCase.invoke(keyWord).last()
 
         //Then
-        assertThat(state?.let { it::class },`is`(SearchScreenState.Empty::class))
+        assertThat(state::class ,`is`(SearchScreenState.Empty::class))
 
     }
 

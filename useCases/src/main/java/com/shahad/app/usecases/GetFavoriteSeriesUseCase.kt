@@ -10,6 +10,5 @@ class GetFavoriteSeriesUseCase @Inject constructor(
     private val seriesRepository: SeriesRepository
 ) {
     operator fun invoke(): Flow<FavouriteScreenState<List<Series>>> =
-        seriesRepository.getFavoriteSeries()
-
+        seriesRepository.getFavoriteSeries().mapToFavouriteState()
 }

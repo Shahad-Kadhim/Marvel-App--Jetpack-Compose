@@ -1,10 +1,9 @@
 package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.shahad.app.core.FavouriteScreenState
 import com.shahad.app.core.models.Series
 import com.shahad.app.repositories.setIsFavourite
-import com.shahad.app.fakerepositories.FakeSeriesRepository
+import com.shahad.app.usecases.fakeRepositories.FakeSeriesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
@@ -46,8 +45,8 @@ internal class AddSeriesToFavoriteUseCaseTest{
         val favoriteSeries = repository.getFavoriteSeries().last()
 
         //Then
-        assertThat(favoriteSeries::class,`is`(FavouriteScreenState.Success::class))
-        assertThat((favoriteSeries as FavouriteScreenState.Success).data, hasItem(series.setIsFavourite(true)))
+//        assertThat(favoriteSeries::class,`is`(FavouriteScreenState.Success::class))
+        assertThat(favoriteSeries, hasItem(series.setIsFavourite(true)))
 
     }
 
@@ -62,8 +61,8 @@ internal class AddSeriesToFavoriteUseCaseTest{
         val favoriteSeries = repository.getFavoriteSeries().last()
 
         //Then
-        assertThat(favoriteSeries::class,`is`(FavouriteScreenState.Success::class))
-        assertThat((favoriteSeries as FavouriteScreenState.Success).data.size, `is`(1))
+//        assertThat(favoriteSeries::class,`is`(FavouriteScreenState.Success::class))
+        assertThat(favoriteSeries.size, `is`(1))
 
     }
 
