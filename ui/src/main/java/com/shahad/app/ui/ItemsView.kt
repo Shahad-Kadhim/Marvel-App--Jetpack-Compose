@@ -142,6 +142,7 @@ fun SearchAnimation(){
 @Composable
 fun CharacterItem(
     character: Character,
+    onCLickItem: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -151,7 +152,7 @@ fun CharacterItem(
             )
             .fillMaxWidth()
             .clickable {
-
+                onCLickItem()
             }
     ){
         Column(

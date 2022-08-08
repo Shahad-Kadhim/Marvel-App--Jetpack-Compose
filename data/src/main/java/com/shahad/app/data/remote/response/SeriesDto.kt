@@ -34,7 +34,7 @@ data class SeriesDto(
     @SerializedName("thumbnail")
     val thumbnail: Thumbnail? = null,
     @SerializedName("title")
-    val title: String,
+    val title: String?,
     @SerializedName("type")
     val type: String? = null,
     @SerializedName("urls")

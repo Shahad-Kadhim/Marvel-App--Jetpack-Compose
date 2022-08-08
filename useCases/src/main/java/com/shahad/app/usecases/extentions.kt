@@ -1,5 +1,6 @@
 package com.shahad.app.usecases
 
+import com.shahad.app.core.DetailsScreenState
 import com.shahad.app.core.FavouriteScreenState
 import com.shahad.app.core.SearchScreenState
 import com.shahad.app.core.models.Character
@@ -41,6 +42,21 @@ fun <T> Flow<List<T>?>.mapToSearchState(): Flow<SearchScreenState<List<T>?>> {
                 }
             } ?: run {
                 emit(SearchScreenState.Error("no Connection"))
+            }
+        }
+    }
+}
+
+
+@OptIn(FlowPreview::class)
+fun <T> Flow<T?>.mapToDetailsState(): Flow<DetailsScreenState<T?>> {
+    return this.flatMapConcat { model ->
+        flow {
+            emit(DetailsScreenState.Loading)
+            model?.let {
+                emit(DetailsScreenState.Success(model))
+            } ?: run {
+                emit(DetailsScreenState.Error("no Connection"))
             }
         }
     }

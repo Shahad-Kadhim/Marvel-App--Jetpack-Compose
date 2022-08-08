@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.shahad.app.core.Constants
 import com.shahad.app.core.HomeScreenState
 import com.shahad.app.core.models.Character
 import com.shahad.app.core.models.Creator
@@ -45,25 +46,35 @@ fun Home(
             val creators by viewModel.creators.observeAsState()
             val characters by viewModel.characters.observeAsState()
 
-            LazyColumn(modifier = Modifier.fillMaxSize()){
+            LazyColumn(modifier = Modifier.padding(padding).fillMaxSize()){
 
                 series?.let { state ->
                     item{
                         HandleHomeState(state = state) {
-                            SeriesRecycle(series = it, viewModel)
+                            SeriesRecycle(
+                                series = it,
+                                onCLickItem = {},
+                                onCLickFavourite = { series ->
+                                    if(series.isFavourite){
+                                        viewModel.deleteSeriesToFavorite(series.id)
+                                    }else {
+                                        viewModel.addSeriesToFavorite(series)
+                                    }
+                                }
+                            )
                         }
                     }
                 }
 
-                item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
+//                item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
 
-                creators?.let {state ->
-                    item{
-                        HandleHomeState(state = state) {
-                            CreatorRecycle(it)
-                        }
-                    }
-                }
+//                creators?.let {state ->
+//                    item{
+//                        HandleHomeState(state = state) {
+//                            CreatorRecycle(it)
+//                        }
+//                    }
+//                }
 
                 item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
                 characters?.let {
@@ -72,12 +83,12 @@ fun Home(
 
                         }
                     }
-//                this.CharacterRecycle(character = it)
-
                     it.showIfSuccess{ state ->
                         state.data?.let { list ->
                             items(list){ character ->
-                                CharacterItem(character = character )
+                                CharacterItem(character = character ){
+                                    navController.navigate("${Constants.DETAILS_SCREEN}/${character.id.toString()}",)
+                                }
                             }
                         }
                     }
@@ -116,7 +127,7 @@ fun CreatorRecycle(creators: List<Creator>) {
 }
 
 @Composable
-fun SeriesRecycle(series: List<Series>, viewModel: HomeViewModel) {
+fun SeriesRecycle(series: List<Series>, onCLickItem: (Series) -> Unit, onCLickFavourite: (Series) -> Unit ) {
     Section(
         sectionTitle = "Series",
         items = series
@@ -124,14 +135,10 @@ fun SeriesRecycle(series: List<Series>, viewModel: HomeViewModel) {
         SeriesItem(
             series = it,
             onClickFavorite = {
-                if(it.isFavourite){
-                    viewModel.deleteSeriesToFavorite(it.id)
-                }else {
-                    viewModel.addSeriesToFavorite(it)
-                }
+                  onCLickFavourite(it)
             },
             onCLickItem = {
-                // nav to details
+                onCLickItem(it)
             }
         )
     }
@@ -179,21 +186,6 @@ fun TitleSection(title: String, onClickSeeMore: () -> Unit){
             modifier = Modifier
                 .padding(horizontal = MaterialTheme.Spacing.medium,)
                 .alignByBaseline()
-        )
-        Spacer(Modifier.weight(1f))
-        Text(
-            text = "See all ${title.lowercase(Locale.ROOT)}",
-            style = TextStyle(
-                fontSize = 14.sp,
-                color = MaterialTheme.colors.onBackground
-            ),
-            modifier = Modifier
-                .padding(horizontal = MaterialTheme.Spacing.medium,)
-                .alignByBaseline()
-                .clickable {
-                    onClickSeeMore()
-                },
-            textAlign = TextAlign.End,
         )
     }
 }

@@ -28,4 +28,10 @@ abstract class RepositoryModule {
         impl: SeriesRepositoryImp
     ): SeriesRepository
 
+    @Singleton
+    @Binds
+    abstract fun provideStoriesRepository(
+        impl: StoriesRepositoryImp
+    ): StoriesRepository
+
 }

@@ -39,6 +39,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.shahad.app.core.Constants
 import com.shahad.app.core.FilterType
 import com.shahad.app.core.SearchScreenState
 import com.shahad.app.core.models.Character
@@ -62,7 +63,7 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
             val characters by viewModel.characters.observeAsState()
             val creators by viewModel.creator.observeAsState()
             val series by viewModel.series.observeAsState()
-            Column(Modifier.fillMaxSize()) {
+            Column(Modifier.padding(padding).fillMaxSize()) {
                 Row(
                     Modifier
                         .padding(
@@ -141,7 +142,7 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
                 }
                 when (filterType) {
                     FilterType.CHARACTER -> {
-                        ShowCharacters(characters)
+                        ShowCharacters(characters,navController)
                     }
                     FilterType.CREATOR -> {
                             ShowCreators(creators)
@@ -214,12 +215,14 @@ fun ShowCreators(state: SearchScreenState<List<Creator>?>?) {
 }
 
 @Composable
-fun ShowCharacters(state: SearchScreenState<List<Character>?>?) {
+fun ShowCharacters(state: SearchScreenState<List<Character>?>?,navController: NavController) {
     HandleState(state = state) {
         Log.i("ZZZ",it.toString())
         LazyColumn{
             items(it) { character ->
-                CharacterItem(character = character)
+                CharacterItem(character = character){
+                    navController.navigate("${Constants.DETAILS_SCREEN}/${character.id}")
+                }
             }
         }
     }

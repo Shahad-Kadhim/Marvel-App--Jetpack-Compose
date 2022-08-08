@@ -45,4 +45,12 @@ class CharactersRepositoryImp @Inject constructor(
         )
     }
 
+
+    override fun getCharacterDetails(characterId: Long): Flow<List<Character>?> {
+        return wrapWithFlow(
+            request = { api.getCharacterById(characterId)},
+            mapper = { Character(it.id, it.name, it.thumbnail.toImageUrl(),it.description ?: "No Description" )}
+        )
+    }
+
 }

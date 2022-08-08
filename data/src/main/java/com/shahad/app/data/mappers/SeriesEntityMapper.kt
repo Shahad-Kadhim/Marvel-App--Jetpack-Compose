@@ -12,7 +12,7 @@ class SeriesEntityMapper @Inject constructor(): Mapper<SeriesDto, SeriesEntity> 
         SeriesEntity(
             id = input.id,
             rating = input.rating,
-            title = input.title,
+            title = input.title ?: "",
             imageUrl = input.thumbnail.toImageUrl(),
             lastDateModify = input.modified
         )

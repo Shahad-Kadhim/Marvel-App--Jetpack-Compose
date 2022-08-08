@@ -6,22 +6,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.saveable
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.shahad.app.core.Constants
 import com.shahad.app.ui.theme.MarvelAppTheme
+import com.shahad.app.viewmodels.CharacterDetailsViewModel
 import com.shahad.app.viewmodels.FavoriteViewModel
 import com.shahad.app.viewmodels.HomeViewModel
 import com.shahad.app.viewmodels.SearchViewModel
@@ -72,7 +78,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         ) {
-            NavHost(navController = navController, startDestination = Constants.HOME_ROUTE) {
+            NavHost(
+                navController = navController,
+                startDestination = Constants.HOME_ROUTE,
+                modifier = Modifier.padding(it)
+            ) {
                 composable(
                     route = Screen.HomeScreen.route,
                     content = {
@@ -94,6 +104,15 @@ class MainActivity : ComponentActivity() {
                     content = {
                         val viewModel: FavoriteViewModel by viewModels()
                         FavoriteScreen(navController = navController, viewModel = viewModel)
+                    }
+                )
+
+                composable(
+                    route = "${Constants.DETAILS_SCREEN}/{${Constants.ID_KEY}}",
+                    arguments = listOf(navArgument(Constants.ID_KEY) { type = NavType.LongType }),
+                    content = {
+                        val viewModel: CharacterDetailsViewModel by viewModels()
+                        CharacterDetailsScreen(navController,viewModel,it.arguments?.getLong(Constants.ID_KEY) ?: 0L)
                     }
                 )
 

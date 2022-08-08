@@ -29,7 +29,7 @@ class SeriesRepositoryImp @Inject constructor(
             numberOfSeries,
         ){ body ->
             body?.data?.results?.map { seriesDto ->
-                localMappers.seriesEntityMapper.map(seriesDto)
+                localMappers.seriesEntityMapper.map(seriesDto) //TODO get if series is favourite
             }
         }
     }
@@ -37,7 +37,7 @@ class SeriesRepositoryImp @Inject constructor(
     override fun searchSeries(keyWord: String): Flow<List<Series>?> {
         return wrapWithFlow(
             request = { api.getSeries(searchKeyWord = keyWord) },
-            mapper = { Series(it.id,it.rating,it.title,it.thumbnail.toImageUrl()) }
+            mapper = { Series(it.id,it.rating,it.title ?: "",it.thumbnail.toImageUrl()) } //TODO get if series is favourite
         )
     }
 

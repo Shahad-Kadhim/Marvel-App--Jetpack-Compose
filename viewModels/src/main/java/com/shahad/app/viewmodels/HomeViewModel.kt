@@ -31,25 +31,25 @@ class HomeViewModel @Inject constructor(
         collectCharacter()
     }
 
-     internal fun collectCreators() {
+     private fun collectCreators() {
         viewModelScope.launch {
-            creatorsUseCase.invoke(10).collect {
+            creatorsUseCase.invoke(20).collect {
                     creators.value = it
                 }
         }
     }
 
-     internal fun collectSeries() {
+     private fun collectSeries() {
         viewModelScope.launch{
-            seriesUseCase.invoke(10).collect {
+            seriesUseCase.invoke(20).collect {
                 series.value = it
             }
         }
     }
 
-    internal fun collectCharacter(){
+    private fun collectCharacter(){
         viewModelScope.launch{
-            charactersUseCase.invoke(10).collect {
+            charactersUseCase.invoke(20).collect {
                 characters.value = it
             }
         }

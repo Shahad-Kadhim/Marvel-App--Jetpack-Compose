@@ -29,7 +29,7 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel){
         modifier =  Modifier.fillMaxSize(),
         content = { paddingValues ->
             val state by viewModel.favoriteSeries.asLiveData().observeAsState()
-            Column(Modifier.fillMaxSize()) {
+            Column(Modifier.padding(paddingValues).fillMaxSize()) {
                 Row(
                     Modifier
                         .padding(

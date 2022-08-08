@@ -41,6 +41,7 @@ internal interface BaseRepository {
                 })
             } catch (e: Exception) {
                 emit(null)
+                Log.i("RRI",e.message.toString())
             }
         }
     }
