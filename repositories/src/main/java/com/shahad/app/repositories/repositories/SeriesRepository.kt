@@ -9,7 +9,7 @@ interface SeriesRepository {
     suspend fun refreshSeries(numberOfSeries: Int)
     fun getFavoriteSeries(): Flow<List<Series>>
     suspend fun addFavouriteSeries(series: Series)
-    suspend fun deleteFavouriteSeries(seriesId: Int)
+    suspend fun deleteFavouriteSeries(seriesId: Long)
     suspend fun clearFavoriteSeries()
     fun searchSeriesWithName(keyWord: String): Flow<PagingData<Series>>
 

@@ -79,7 +79,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun deleteSeriesToFavorite(seriesId: Int){
+    fun deleteSeriesToFavorite(seriesId: Long){
         viewModelScope.launch {
             deleteSeriesFromFavoriteUseCase.invoke(seriesId)
         }

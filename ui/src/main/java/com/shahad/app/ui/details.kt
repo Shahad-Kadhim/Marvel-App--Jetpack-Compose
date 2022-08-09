@@ -149,8 +149,9 @@ fun StoryItem(story: Story){
                 vertical = MaterialTheme.Spacing.small
             )
             .clip(RoundedCornerShape(MaterialTheme.Spacing.small))
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.secondary),
+            .fillMaxWidth() ,
+        contentColor = MaterialTheme.colors.onSecondary,
+        backgroundColor = MaterialTheme.colors.secondary
     ) {
         Column(
             modifier = Modifier

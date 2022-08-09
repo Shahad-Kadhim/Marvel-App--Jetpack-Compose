@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class CharacterEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val name: String,
     val imageUrl: String,
     val description: String?,

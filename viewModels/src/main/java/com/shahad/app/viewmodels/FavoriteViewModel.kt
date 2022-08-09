@@ -16,7 +16,7 @@ class FavoriteViewModel @Inject constructor(
 
     val favoriteSeries = getFavoriteSeriesUseCase.invoke()
 
-    fun deleteSeries(seriesId: Int){
+    fun deleteSeries(seriesId: Long){
         viewModelScope.launch {
             deleteSeriesFromFavoriteUseCase.invoke(seriesId)
         }

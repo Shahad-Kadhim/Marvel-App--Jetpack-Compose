@@ -15,7 +15,7 @@ data class StoryDto(
     @SerializedName("events")
     val events: Details? ,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("modified")
     val modified: String? = "",
     @SerializedName("originalIssue")

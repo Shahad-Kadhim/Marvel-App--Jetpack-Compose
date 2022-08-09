@@ -12,7 +12,7 @@ data class CreatorDto(
     @SerializedName("fullName")
     val name: String,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("lastName")
     val lastName: String? = null,
     @SerializedName("middleName")

@@ -6,10 +6,8 @@ import androidx.paging.PagingData
 import com.shahad.app.data.local.MarvelDao
 import com.shahad.app.data.mappers.LocalMappers
 import com.shahad.app.data.remote.MarvelService
-import com.shahad.app.data.toImageUrl
 import com.shahad.app.repositories.mappers.DomainMapper
 import com.shahad.app.core.models.Series
-import com.shahad.app.repositories.CharacterSource
 import com.shahad.app.repositories.SeriesSource
 import com.shahad.app.repositories.convertTo
 import kotlinx.coroutines.flow.Flow
@@ -48,7 +46,7 @@ class SeriesRepositoryImp @Inject constructor(
         dao.insertFavouriteSeries(domainMappers.seriesMapper.inverseMap(series.apply { isFavourite = true }))
     }
 
-    override suspend fun deleteFavouriteSeries(seriesId: Int) {
+    override suspend fun deleteFavouriteSeries(seriesId: Long) {
         dao.deleteFavouriteSeries(seriesId)
     }
 
@@ -66,7 +64,7 @@ class SeriesRepositoryImp @Inject constructor(
         ).flow
     }
 
-    private suspend fun ifSeriesFavourite(seriesId: Int) =
+    private suspend fun ifSeriesFavourite(seriesId: Long) =
         dao.ifSeriesFavourite(seriesId)
 
 

@@ -1,5 +1,6 @@
 package com.shahad.app.usecases.fakeRepositories
 
+import androidx.paging.PagingData
 import com.shahad.app.core.models.Creator
 import com.shahad.app.data.local.entities.CreatorEntity
 import com.shahad.app.data.mappers.*
@@ -9,19 +10,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import com.shahad.app.data.toImageUrl
 import com.shahad.app.repositories.repositories.CreatorsRepository
+import com.shahad.app.repositories.toCreator
 
 class FakeCreatorRepository: CreatorsRepository {
 
-
-    var domainMapper: DomainMapper = DomainMapper(
-        CharacterMapper(), SeriesMapper(),
-        CreatorMapper(), FavoriteSeriesMapper()
-    )
-
-    var localMapper: LocalMappers = LocalMappers(
-        CharacterEntityMapper(), SeriesEntityMapper(),
-        CreatorEntityMapper()
-    )
 
     private var shouldReturnError = false
 
@@ -44,30 +36,11 @@ class FakeCreatorRepository: CreatorsRepository {
 
     fun getSizeOfRemoteCreators() = remoteCreators.size
 
-    override suspend fun getCreators(numberOfCreators: Int): Flow<List<Creator>> {
-        refreshCreators(numberOfCreators)
+    override fun searchCreatorWithName(keyWord: String): Flow<PagingData<Creator>> {
         return flow {
-            emit(localCreators.map { domainMapper.creatorMapper.map(it.value) })
+           emit(PagingData.from(remoteCreators.values.filter { it.name.contains(keyWord) }.map { it.toCreator() }))
         }
     }
 
-    override suspend fun refreshCreators(numberOfCreators: Int) {
-        takeUnless { shouldReturnError }?.let {
-            localCreators.putAll(remoteCreators.map { Pair(it.key,localMapper.creatorEntityMapper.map(it.value)) })
-        }
-    }
-
-    override fun searchCreator(keyWord: String): Flow<List<Creator>?> {
-        return flow {
-            if(shouldReturnError){
-                emit(null)
-            }else {
-                val creators = remoteCreators.values.filter { it.name.contains(keyWord) }.map{
-                    Creator(it.id,it.name,it.thumbnail.toImageUrl())
-                }
-                emit(creators)
-            }
-        }
-    }
 
 }

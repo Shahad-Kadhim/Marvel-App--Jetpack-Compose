@@ -1,12 +1,13 @@
 package com.shahad.app.usecases.fakeRepositories
 
+import androidx.paging.PagingData
 import com.shahad.app.core.models.Series
 import com.shahad.app.data.local.entities.SeriesEntity
 import com.shahad.app.data.mappers.*
 import com.shahad.app.data.remote.response.SeriesDto
-import com.shahad.app.data.toImageUrl
 import com.shahad.app.repositories.mappers.*
 import com.shahad.app.repositories.repositories.SeriesRepository
+import com.shahad.app.repositories.toSeries
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -25,15 +26,15 @@ class FakeSeriesRepository: SeriesRepository {
 
     private var shouldReturnError = false
 
-    private val remoteSeries = mutableMapOf(
+    private val remoteSeries = mutableMapOf<Long,SeriesDto>(
         Pair(1, SeriesDto(id = 1, title = "s1", description = "d1", modified = "2020/2/1")),
         Pair(2, SeriesDto(id = 2, title = "s2", description = "d2", modified = "2020/2/1")),
     )
 
-    private  val favoriteSeries =  mutableMapOf<Int, SeriesEntity>()
 
-    private val localSeries = mutableMapOf<Int, SeriesEntity>()
+    private val localSeries = mutableMapOf<Long, SeriesEntity>()
 
+    private fun getFavouriteSeries() = localSeries.filter { it.value.isFavorite }.toMutableMap()
 
     fun setReturnError(value: Boolean){
         shouldReturnError = value
@@ -60,39 +61,33 @@ class FakeSeriesRepository: SeriesRepository {
         }
     }
 
-    override fun searchSeries(keyWord: String): Flow<List<Series>?> {
-        return flow {
-            if (shouldReturnError) {
-                emit(null)
-            } else {
-                val series = remoteSeries.values.filter { it.title?.contains(keyWord)  == true }.map {
-                    Series(
-                        id = it.id,
-                        title = it.title ?: "",
-                        imageUrl = it.thumbnail.toImageUrl(),
-                        rating = "5"
-                    )
-                }
-                emit(series)
-            }
-        }
-    }
 
     override fun getFavoriteSeries(): Flow<List<Series>> {
         return flow {
-            emit(favoriteSeries.values.map(domainMapper.seriesMapper::map))
+            emit(getFavouriteSeries().values.map(domainMapper.seriesMapper::map))
         }
     }
 
     override suspend fun addFavouriteSeries(series: Series) {
-        favoriteSeries[series.id] = domainMapper.seriesMapper.inverseMap(series.apply { isFavourite = true })
+        getFavouriteSeries()[series.id] = domainMapper.seriesMapper.inverseMap(series.apply { isFavourite = true })
     }
 
-    override suspend fun deleteFavouriteSeries(seriesId: Int) {
-        favoriteSeries.remove(seriesId)
+    override suspend fun deleteFavouriteSeries(seriesId: Long) {
+        localSeries[seriesId]?.apply {
+            isFavorite = false
+        }
     }
 
     override suspend fun clearFavoriteSeries() {
-        favoriteSeries.clear()
+        getFavouriteSeries().forEach{
+            localSeries[it.key]?.isFavorite =false
+        }
     }
+
+    override fun searchSeriesWithName(keyWord: String): Flow<PagingData<Series>> {
+        return flow {
+            emit(PagingData.from(remoteSeries.values.filter { it.title?.contains(keyWord) == true }.map { it.toSeries() }))
+        }
+    }
+
 }

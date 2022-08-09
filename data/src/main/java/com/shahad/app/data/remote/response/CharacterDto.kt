@@ -10,7 +10,7 @@ data class CharacterDto(
     @SerializedName("events")
     val events: Details? = null,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("modified")
     val modified: String,
     @SerializedName("name")

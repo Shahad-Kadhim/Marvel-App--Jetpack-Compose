@@ -17,7 +17,8 @@ private val DarkColorPalette = darkColors(
     background = backgroundColorNight,
     onSecondary = textColorNight,
     onBackground = textColorNight,
-    onPrimary = Color.White
+    onPrimary = Color.White,
+    surface = Color.DarkGray
 )
 @SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
@@ -27,7 +28,8 @@ private val LightColorPalette = lightColors(
     background = backgroundColorLight,
     onSecondary = textColorLight,
     onBackground = textColorLight,
-    onPrimary = Color.White
+    onPrimary = Color.White ,
+    surface = Color.LightGray
 //    onSurface = Colors().brandColor,
 )
 

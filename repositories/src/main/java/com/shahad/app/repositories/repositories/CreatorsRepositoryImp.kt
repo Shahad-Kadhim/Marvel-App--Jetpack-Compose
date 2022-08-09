@@ -22,25 +22,7 @@ class CreatorsRepositoryImp @Inject constructor(
     private val domainMappers: DomainMapper,
     private val localMappers: LocalMappers
 ): CreatorsRepository, BaseRepository {
-    override suspend fun getCreators(numberOfCreators: Int): Flow<List<Creator>> {
-        refreshCreators(numberOfCreators)
-        return dao.getCreator()
-            .convertTo(domainMappers.creatorMapper::map)
-    }
 
-    override suspend fun refreshCreators(numberOfCreators: Int) {
-        refreshDataBase(
-            api::getCreators,
-            dao::insertCreator,
-            0 ,
-            numberOfCreators
-        ){body ->
-            body?.data?.results?.map { creatorDto ->
-                localMappers.creatorEntityMapper.map(creatorDto)
-            }
-
-        }
-    }
 
     override fun searchCreatorWithName(keyWord: String): Flow<PagingData<Creator>> {
         return Pager(

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class SeriesEntity (
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val rating: String?,
     val title: String,
     val imageUrl: String,

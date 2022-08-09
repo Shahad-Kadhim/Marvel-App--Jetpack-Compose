@@ -225,10 +225,9 @@ fun<T> Chip(
             .padding(MaterialTheme.Spacing.tiny)
             .wrapContentSize(),
         shape = RoundedCornerShape(MaterialTheme.Spacing.small),
-        color = if (isSelected) MaterialTheme.colors.primary else Color.LightGray,
-        contentColor = MaterialTheme.colors.onPrimary
+        color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+        contentColor = if (isSelected) MaterialTheme.colors.onPrimary else  MaterialTheme.colors.onSecondary
     ){
-
         Row(
             modifier = Modifier
                 .toggleable(

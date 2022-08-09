@@ -1,25 +1,17 @@
 package com.shahad.app.usecases.fakeRepositories
 
+import androidx.paging.PagingData
 import com.shahad.app.data.local.entities.CharacterEntity
 import com.shahad.app.data.mappers.*
 import com.shahad.app.data.remote.response.CharacterDto
 import com.shahad.app.repositories.mappers.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import com.shahad.app.data.toImageUrl
 import com.shahad.app.core.models.Character
 import com.shahad.app.repositories.repositories.CharactersRepository
+import com.shahad.app.repositories.toCharacter
 
 class FakeCharacterRepository: CharactersRepository {
-
-    var domainMapper: DomainMapper = DomainMapper(
-        CharacterMapper(), SeriesMapper(),
-        CreatorMapper(), FavoriteSeriesMapper()
-    )
-
-    var localMapper: LocalMappers = LocalMappers(CharacterEntityMapper(), SeriesEntityMapper(),
-        CreatorEntityMapper()
-    )
 
     private var shouldReturnError = false
 
@@ -41,30 +33,21 @@ class FakeCharacterRepository: CharactersRepository {
 
     fun getSizeOfRemoteCharacters() = remoteCharacters.size
 
-    override suspend fun getCharacters(numberOfCharacter: Int): Flow<List<Character>> {
-        refreshCharacters(numberOfCharacter)
+    override fun getCharacterDetails(characterId: Long): Flow<List<Character>?> {
         return flow {
-            emit(localCharacters.map { domainMapper.characterMapper.map(it.value) })
+            emit(remoteCharacters.values.filter { it.id == characterId }.map { it.toCharacter() })
         }
     }
 
-    override suspend fun refreshCharacters(numberOfCharacter: Int) {
-        takeUnless { shouldReturnError }?.let {
-            localCharacters.putAll(remoteCharacters.map { Pair(it.key,localMapper.characterEntityMapper.map(it.value)) })
+    override fun getCharacter(searchKeyword: String?): Flow<PagingData<Character>> {
+        return flow{
+            (PagingData.from(remoteCharacters.values.map { it.toCharacter() }))
         }
     }
 
-    override fun searchCharacter(keyWord: String): Flow<List<Character>?> {
-
-        return  flow {
-            if(shouldReturnError){
-                emit(null)
-            }else {
-                val characters = remoteCharacters.values.filter { it.name.contains(keyWord)}.map{
-                    Character(it.id,it.name,it.thumbnail.toImageUrl(),it.description ?: "No Description")
-                }
-                emit(characters)
-            }
+    override fun searchCharacterWithName(keyWord: String): Flow<PagingData<Character>> {
+        return flow{
+            emit(PagingData.from(remoteCharacters.values.filter { it.name.contains(keyWord) }.map { it.toCharacter() }))
         }
     }
 

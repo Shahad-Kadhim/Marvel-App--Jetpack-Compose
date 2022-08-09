@@ -12,6 +12,7 @@ import com.shahad.app.data.local.entities.CharacterEntity
 import com.shahad.app.data.local.entities.CreatorEntity
 import com.shahad.app.data.local.entities.SeriesEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
@@ -49,13 +50,14 @@ class MarvelDaoTest {
     fun insertCharacter_firstTime_SavedIt() = runTest{
         //Given
         val character= CharacterEntity(1,"Super Man","","something", "2020/2/2")
+
         marvelDao.insertCharacters(listOf(character))
 
         //When
-        val characters = marvelDao.getCharacters().asLiveData()
+        val characters = marvelDao.getCharacters()
 
         //Then
-        assertThat(characters.getOrAwaitValue(), hasItem(character))
+        assertThat(characters, hasItem(character))
     }
 
     @Test
@@ -66,45 +68,17 @@ class MarvelDaoTest {
         marvelDao.insertCharacters(listOf(firstCharacter,secondCharacter))
 
         //When
-        val characters = marvelDao.getCharacters().asLiveData()
+        val characters = marvelDao.getCharacters()
 
         //Then
-        assertThat(characters.getOrAwaitValue(), hasItem(secondCharacter))
-        assertThat(characters.getOrAwaitValue(), not(hasItem(firstCharacter)))
-    }
-
-    @Test
-    fun insertCreator_firstTime_SavedIt() = runTest{
-        //Given
-        val creator= CreatorEntity(1,"creator name","","2020/2/2")
-        marvelDao.insertCreator(listOf(creator))
-
-        //When
-        val creators = marvelDao.getCreator().asLiveData()
-
-        //Then
-        assertThat(creators.getOrAwaitValue(), hasItem(creator))
-    }
-
-    @Test
-    fun insertCreator_twiceTime_DiscardFirst() = runTest{
-        //Given
-        val firstCreator= CreatorEntity(1,"creator name","","2020/2/2")
-        val secondCreator= CreatorEntity(1,"creator name","www.creatorImage.com","2020/2/2")
-        marvelDao.insertCreator(listOf(firstCreator,secondCreator))
-
-        //When
-        val creators = marvelDao.getCreator().asLiveData()
-
-        //Then
-        assertThat(creators.getOrAwaitValue(), hasItem(secondCreator))
-        assertThat(creators.getOrAwaitValue(), not(hasItem(firstCreator)))
+        assertThat(characters, hasItem(secondCharacter))
+        assertThat(characters, not(hasItem(firstCharacter)))
     }
 
     @Test
     fun insertSeries_firstTime_SavedIt() = runTest{
         //Given
-        val series= SeriesEntity(1,"5","title","", "2020/2/2")
+        val series= SeriesEntity(1,"5","title","", "2020/2/2",false)
         marvelDao.insertSeries(listOf(series))
 
         //When
@@ -117,8 +91,8 @@ class MarvelDaoTest {
     @Test
     fun insertSeries_twiceTime_DiscardFirst() = runTest{
         //Given
-        val firstSeries= SeriesEntity(1,"5","title","", "2020/2/2")
-        val secondSeries= SeriesEntity(1,"5","title","www.series.jpg", "2020/2/4")
+        val firstSeries= SeriesEntity(1,"5","title","", "2020/2/2",false)
+        val secondSeries= SeriesEntity(1,"5","title","www.series.jpg", "2020/2/4",false)
         marvelDao.insertSeries(listOf(firstSeries,secondSeries))
 
         //When

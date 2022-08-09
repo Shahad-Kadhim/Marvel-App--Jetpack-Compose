@@ -48,7 +48,7 @@ fun SeriesItem(
             AsyncImage(
                 model= series.imageUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Crop
             )
             Image(
                 painter =
@@ -71,16 +71,13 @@ fun SeriesItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xB3F5F2F4), Color(0x80080708))
-                        )
-                    )
+                    .background(Color(0x99000000))
             ){
                 Text(
                     text = series.title,
                     style = TextStyle(
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        color = Color.White
                     ),
                     modifier = Modifier
                         .padding(MaterialTheme.Spacing.small, MaterialTheme.Spacing.tiny)
