@@ -54,30 +54,18 @@ fun Home(
                 series?.let { state ->
                     item{
                         HandleHomeState(state = state) {
-                            SeriesRecycle(
-                                series = it,
-                                onCLickItem = {},
-                                onCLickFavourite = { series ->
-                                    if(series.isFavourite){
-                                        viewModel.deleteSeriesToFavorite(series.id)
-                                    }else {
-                                        viewModel.addSeriesToFavorite(series)
-                                    }
+                            SeriesRecycle(series = it)
+                            { series ->
+                                if(series.isFavourite){
+                                    viewModel.deleteSeriesToFavorite(series.id)
+                                }else {
+                                    viewModel.addSeriesToFavorite(series)
                                 }
-                            )
+                            }
                         }
                     }
                 }
 
-//                item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
-
-//                creators?.let {state ->
-//                    item{
-//                        HandleHomeState(state = state) {
-//                            CreatorRecycle(it)
-//                        }
-//                    }
-//                }
 
                 item { Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small)) }
                 characters?.let {
@@ -120,7 +108,7 @@ fun <T> HandleHomeState(
 }
 
 @Composable
-fun SeriesRecycle(series: List<Series>, onCLickItem: (Series) -> Unit, onCLickFavourite: (Series) -> Unit ) {
+fun SeriesRecycle(series: List<Series>, onCLickFavourite: (Series) -> Unit ) {
     Section(
         sectionTitle = "Series",
         items = series
@@ -129,9 +117,6 @@ fun SeriesRecycle(series: List<Series>, onCLickItem: (Series) -> Unit, onCLickFa
             series = it,
             onClickFavorite = {
                   onCLickFavourite(it)
-            },
-            onCLickItem = {
-                onCLickItem(it)
             }
         )
     }

@@ -1,11 +1,16 @@
 package com.shahad.app.repositories.repositories
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.shahad.app.data.local.MarvelDao
 import com.shahad.app.data.mappers.LocalMappers
 import com.shahad.app.data.remote.MarvelService
 import com.shahad.app.data.toImageUrl
 import com.shahad.app.repositories.mappers.DomainMapper
 import com.shahad.app.core.models.Series
+import com.shahad.app.repositories.CharacterSource
+import com.shahad.app.repositories.SeriesSource
 import com.shahad.app.repositories.convertTo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -35,14 +40,6 @@ class SeriesRepositoryImp @Inject constructor(
             body?.data?.results?.map(localMappers.seriesEntityMapper::map)
         }
     }
-
-    override fun searchSeries(keyWord: String): Flow<List<Series>?> {
-        return wrapWithFlow(
-            request = { api.getSeries(searchKeyWord = keyWord) },
-            mapper = { Series(it.id,it.rating,it.title ?: "",it.thumbnail.toImageUrl(),ifSeriesFavourite(it.id)) }
-        )
-    }
-
     override fun getFavoriteSeries(): Flow<List<Series>> {
         return dao.getFavoriteSeries().convertTo(domainMappers.seriesMapper::map)
     }
@@ -59,7 +56,17 @@ class SeriesRepositoryImp @Inject constructor(
         dao.clearFavoriteSeries()
     }
 
-    suspend fun ifSeriesFavourite(seriesId: Int) =
+    override fun searchSeriesWithName(keyWord: String): Flow<PagingData<Series>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { SeriesSource(api, keyWord ) }
+        ).flow
+    }
+
+    private suspend fun ifSeriesFavourite(seriesId: Int) =
         dao.ifSeriesFavourite(seriesId)
 
 

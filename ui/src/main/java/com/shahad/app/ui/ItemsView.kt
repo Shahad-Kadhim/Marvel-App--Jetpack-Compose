@@ -35,15 +35,13 @@ import com.shahad.app.ui.theme.Spacing
 @Composable
 fun SeriesItem(
     series: Series,
-    onCLickItem: () -> Unit,
     onClickFavorite: () -> Unit
 ){
     Card(
         modifier = Modifier
             .padding(horizontal = MaterialTheme.Spacing.tiny)
             .height(130.dp)
-            .width(130.dp)
-            .clickable { onCLickItem() },
+            .width(130.dp),
         shape = RoundedCornerShape(8.dp)
     ){
         Box(Modifier.fillMaxSize()){
@@ -204,7 +202,8 @@ fun CreatorItem(creator: Creator) {
             modifier = Modifier
                 .padding(MaterialTheme.Spacing.medium)
                 .aspectRatio(1f)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            contentScale = ContentScale.FillBounds
         )
         Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small))
         Text(

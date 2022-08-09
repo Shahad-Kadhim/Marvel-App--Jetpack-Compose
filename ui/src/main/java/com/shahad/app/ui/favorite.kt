@@ -90,15 +90,9 @@ fun SeriesGridRecycle(series: List<Series>, viewModel: FavoriteViewModel){
         modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium)
     ) {
         items(series) {
-            SeriesItem(
-                series =it,
-                onCLickItem = {
-
-                },
-                onClickFavorite = {
+            SeriesItem(series =it){
                     viewModel.deleteSeries(it.id)
                 }
-            )
         }
     }
 

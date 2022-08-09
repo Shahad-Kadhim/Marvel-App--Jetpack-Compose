@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +20,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +35,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.shahad.app.core.Constants
 import com.shahad.app.core.FilterType
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.core.models.Character
 import com.shahad.app.core.models.Creator
 import com.shahad.app.core.models.Series
@@ -57,8 +54,8 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
             val rotateAnimation = remember { Animatable(0f) }
             val scope = rememberCoroutineScope()
             val characters = viewModel.characters.collectAsLazyPagingItems()
-            val creators by viewModel.creator.observeAsState()
-            val series by viewModel.series.observeAsState()
+            val creators = viewModel.creator.collectAsLazyPagingItems()
+            val series = viewModel.series.collectAsLazyPagingItems()
             Column(
                 Modifier
                     .padding(padding)
@@ -149,10 +146,16 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
                         ShowCharacters(characters,navController)
                     }
                     FilterType.CREATOR -> {
-                            ShowCreators(creators)
+                        ShowCreators(creators)
                     }
                     FilterType.SERIES -> {
-                            ShowSeries(series)
+                        ShowSeries(series){ series ->
+                            if(series.isFavourite){
+                                viewModel.deleteSeriesToFavorite(series.id)
+                            }else {
+                                viewModel.addSeriesToFavorite(series)
+                            }
+                        }
                     }
                 }
             }
@@ -162,57 +165,33 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
 }
 
 @Composable
-fun ShowSeries(state: SearchScreenState<List<Series>?>?) {
-    HandleState(state = state) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
-            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.small)
-        ) {
-            items(it) {
-                SeriesItem(
-                    series =it,
-                    onCLickItem = {
-
-                    },
-                    onClickFavorite = {
-                        
-                    }
-                )
+fun ShowSeries(series: LazyPagingItems<Series>, onClickFavourite: (Series) -> Unit ) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
+        modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.small)
+    ) {
+        items(series.itemCount) { index ->
+            series[index]?.let {
+                SeriesItem(series = it) {
+                    onClickFavourite(it)
+                }
             }
         }
     }
 }
 
 @Composable
-fun <T> HandleState(
-    state: SearchScreenState<T?>?,
-    showResult: @Composable (T) -> Unit
-){
-    when(state){
-        is SearchScreenState.Error -> ErrorConnectionAnimation()
-        SearchScreenState.Loading -> LoadingAnimation()
-        is SearchScreenState.Success -> {
-            state.data?.let {
-                showResult(it)
-            }
-        }
-        SearchScreenState.Empty -> NotFoundAnimation()
-        null -> SearchAnimation()
-    }
-}
-
-@Composable
-fun ShowCreators(state: SearchScreenState<List<Creator>?>?) {
-    HandleState(state = state) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
-            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.small)
-        ) {
-            items(it) {
-                CreatorItem(creator = it)
+fun ShowCreators(creators: LazyPagingItems<Creator>) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
+        modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.small)
+    ) {
+        items(creators.itemCount) { index ->
+            creators[index]?.let { creator ->
+                CreatorItem(creator)
             }
         }
     }
@@ -222,7 +201,6 @@ fun ShowCreators(state: SearchScreenState<List<Creator>?>?) {
 fun ShowCharacters(state: LazyPagingItems<Character>, navController: NavController) {
     LazyColumn{
         items(state.itemCount) { index ->
-
             state[index]?.let {
                 CharacterItem(character = it){
                     navController.navigate("${Constants.DETAILS_SCREEN}/${it.id}")

@@ -4,13 +4,10 @@ import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.shahad.app.core.FilterType
-import com.shahad.app.core.SearchScreenState
 import com.shahad.app.core.models.Character
 import com.shahad.app.core.models.Creator
 import com.shahad.app.core.models.Series
-import com.shahad.app.usecases.SearchCharacterUseCase
-import com.shahad.app.usecases.SearchCreatorUseCase
-import com.shahad.app.usecases.SearchSeriesUseCase
+import com.shahad.app.usecases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +18,9 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val searchCharacterUseCase: SearchCharacterUseCase,
     private val searchSeriesUseCase: SearchSeriesUseCase,
-    private val searchCreatorUseCase: SearchCreatorUseCase
+    private val searchCreatorUseCase: SearchCreatorUseCase,
+    private val addSeriesToFavoriteUseCase: AddSeriesToFavoriteUseCase,
+    private val deleteSeriesFromFavoriteUseCase: DeleteSeriesFromFavoriteUseCase
 ): ViewModel() {
 
     val search = MutableStateFlow<String>("")
@@ -33,49 +32,39 @@ class SearchViewModel @Inject constructor(
             takeIf { filterType.value == FilterType.CHARACTER && characterName.isNotBlank() }?.let {
                 collect(searchCharacterUseCase.invoke(characterName).cachedIn(viewModelScope))
             }
-            if (characterName.isNullOrBlank()){
-                this.value = PagingData.empty<Character>()
-            }
         }
         addSource(filterType.asLiveData()){ currentFilterType ->
             takeIf { currentFilterType == FilterType.CHARACTER && search.value.isNotBlank()}?.let {
                 collect(searchCharacterUseCase.invoke(search.value).cachedIn(viewModelScope))
             }
-            if (search.value.isBlank()){
-                this.value = PagingData.empty<Character>()
+        }
+    }.asFlow()
+
+    val creator = MediatorLiveData<PagingData<Creator>>().apply {
+        addSource(search.asLiveData()){ creatorName ->
+            takeIf { filterType.value == FilterType.CREATOR && creatorName.isNotBlank() }?.let {
+                collect(searchCreatorUseCase.invoke(creatorName).cachedIn(viewModelScope))
+            }
+        }
+        addSource(filterType.asLiveData()){ currentFilterType ->
+            takeIf { currentFilterType == FilterType.CREATOR  && search.value.isNotBlank()}?.let {
+                 collect(searchCreatorUseCase.invoke(search.value).cachedIn(viewModelScope))
             }
         }
     }.asFlow()
 
-    val creator = MediatorLiveData<SearchScreenState<List<Creator>?>?>().apply {
-        addSource(search.asLiveData()){ creatorName ->
-            takeIf { filterType.value == FilterType.CREATOR && creatorName.isNotBlank() }?.let {
-                collect(searchCreatorUseCase.invoke(creatorName))
-            }
-            emitNullIfEmpty(this,creatorName)
-        }
-        addSource(filterType.asLiveData()){ currentFilterType ->
-            takeIf { currentFilterType == FilterType.CREATOR  && search.value.isNotBlank()}?.let {
-                 collect(searchCreatorUseCase.invoke(search.value))
-            }
-            emitNullIfEmpty(this,search.value)
-        }
-    }
-
-    val series = MediatorLiveData<SearchScreenState<List<Series>?>?>().apply {
+    val series = MediatorLiveData<PagingData<Series>>().apply {
         addSource(search.asLiveData()){ seriesTitle ->
             takeIf { filterType.value == FilterType.SERIES && seriesTitle.isNotBlank()}?.let {
-                collect(searchSeriesUseCase.invoke(seriesTitle))
+                collect(searchSeriesUseCase.invoke(seriesTitle).cachedIn(viewModelScope))
             }
-            emitNullIfEmpty(this,seriesTitle)
         }
         addSource(filterType.asLiveData()){ currentFilterType ->
             takeIf { currentFilterType == FilterType.SERIES && search.value.isNotBlank()}?.let {
-                collect(searchSeriesUseCase.invoke(search.value))
+                collect(searchSeriesUseCase.invoke(search.value).cachedIn(viewModelScope))
             }
-            emitNullIfEmpty(this,search.value)
         }
-    }
+    }.asFlow()
 
     private fun <T> MediatorLiveData<T>.collect(flow: Flow<T>){
         viewModelScope.launch {
@@ -84,10 +73,15 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+    fun addSeriesToFavorite(series: Series){
+        viewModelScope.launch {
+            addSeriesToFavoriteUseCase.invoke(series)
+        }
+    }
 
-    private fun  <T> emitNullIfEmpty(liveData: MediatorLiveData<T?>, keyWord: String){
-        keyWord.takeIf { it.isEmpty() }?.let {
-            liveData.postValue(null)
+    fun deleteSeriesToFavorite(seriesId: Int){
+        viewModelScope.launch {
+            deleteSeriesFromFavoriteUseCase.invoke(seriesId)
         }
     }
 }
