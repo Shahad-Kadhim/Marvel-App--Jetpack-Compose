@@ -2,13 +2,11 @@ package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.shahad.app.core.models.Series
-import com.shahad.app.repositories.setIsFavourite
 import com.shahad.app.usecases.fakeRepositories.FakeSeriesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -38,30 +36,27 @@ internal class AddSeriesToFavoriteUseCaseTest{
     @Test
     fun addSeriesToFavorite_saveIt() = runTest{
         //Given
-        val series = Series(id = 1, title = "s1", imageUrl = "image.jpg")
+        val series = Series(id = 1, title = "s1", imageUrl = "image.jpg", isFavourite = true)
 
         //When
         addSeriesToFavoriteUseCase.invoke(series)
         val favoriteSeries = repository.getFavoriteSeries().last()
 
         //Then
-//        assertThat(favoriteSeries::class,`is`(FavouriteScreenState.Success::class))
-        assertThat(favoriteSeries, hasItem(series.setIsFavourite(true)))
+        assertThat(favoriteSeries, hasItem(series))
 
     }
 
     @Test
     fun addSeriesToFavorite_twice_SaveItOnce() = runTest{
         //Given
-        val series = Series(id = 1, title = "s1", imageUrl = "image.jpg")
+        val series = Series(id = 1, title = "s1", imageUrl = "image.jpg", isFavourite = true)
 
         //When
         addSeriesToFavoriteUseCase.invoke(series)
         addSeriesToFavoriteUseCase.invoke(series)
         val favoriteSeries = repository.getFavoriteSeries().last()
-
-        //Then
-//        assertThat(favoriteSeries::class,`is`(FavouriteScreenState.Success::class))
+        println(favoriteSeries)
         assertThat(favoriteSeries.size, `is`(1))
 
     }

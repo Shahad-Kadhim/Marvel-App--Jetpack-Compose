@@ -1,11 +1,14 @@
 package com.shahad.app.usecases
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.PagingData
 import androidx.paging.map
 import com.shahad.app.core.HomeScreenState
+import com.shahad.app.core.models.Character
 import com.shahad.app.usecases.fakeRepositories.FakeCharacterRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
@@ -39,19 +42,9 @@ internal class GetCharactersUseCaseTest{
     fun getCharacters_ConnectionStable() = runTest{
 
         //When
-         var characters = getCharactersUseCase.invoke().last()
+         var characters = getCharactersUseCase.invoke()
         //Then
-        assertThat(characters::class , `is`(HomeScreenState.Success::class))
-//        assertThat(characters, `is`(repository.getSizeOfRemoteCharacters()))
-
-        //when
-        repository.updateRemoteCharacter()
-        characters = getCharactersUseCase.invoke().last()
-
-        //Then
-        assertThat(characters::class , `is`(HomeScreenState.Success::class))
-//        assertThat((characters as HomeScreenState.Success).data.size, `is`(repository.getSizeOfRemoteCharacters()))
-
+        assertThat(characters::class , `is`(PagingData.from(repository.getLocalCharacter())::class))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

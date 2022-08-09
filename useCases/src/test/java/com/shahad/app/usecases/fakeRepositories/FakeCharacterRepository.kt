@@ -15,6 +15,8 @@ class FakeCharacterRepository: CharactersRepository {
 
     private var shouldReturnError = false
 
+    val characterEntityMappers = CharacterEntityMapper()
+    val characterMappers = CharacterMapper()
     private val remoteCharacters = mutableMapOf(
         Pair(1, CharacterDto(id = 1, name = "c1", description = "d1", modified = "2020/2/1")),
         Pair(2,CharacterDto(id = 2, name = "c2", description = "d2", modified = "2020/2/1")),
@@ -41,7 +43,18 @@ class FakeCharacterRepository: CharactersRepository {
 
     override fun getCharacter(searchKeyword: String?): Flow<PagingData<Character>> {
         return flow{
-            (PagingData.from(remoteCharacters.values.map { it.toCharacter() }))
+            try {
+                var entry = 0
+                while (entry < localCharacters.size){
+                    emit(PagingData.from(localCharacters.values.map(characterMappers::map).subList(entry,entry+10)))
+                    entry =+ 10
+                }
+            }catch (e:Exception){
+
+            }finally {
+                localCharacters.putAll(remoteCharacters.map { Pair(it.key,characterEntityMappers.map(it.value)) })
+                emit(PagingData.from(localCharacters.values.map(characterMappers::map)))
+            }
         }
     }
 
@@ -50,5 +63,7 @@ class FakeCharacterRepository: CharactersRepository {
             emit(PagingData.from(remoteCharacters.values.filter { it.name.contains(keyWord) }.map { it.toCharacter() }))
         }
     }
+
+    fun getLocalCharacter() = localCharacters.values.map(characterMappers::map)
 
 }

@@ -69,7 +69,13 @@ class FakeSeriesRepository: SeriesRepository {
     }
 
     override suspend fun addFavouriteSeries(series: Series) {
-        getFavouriteSeries()[series.id] = domainMapper.seriesMapper.inverseMap(series.apply { isFavourite = true })
+        localSeries.get(series.id)?.let {
+            it.isFavorite = true
+        } ?: run {
+            localSeries[series.id] =
+                domainMapper.seriesMapper.inverseMap(series.apply { isFavourite = true })
+        }
+
     }
 
     override suspend fun deleteFavouriteSeries(seriesId: Long) {
