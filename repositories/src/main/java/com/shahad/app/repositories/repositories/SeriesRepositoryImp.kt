@@ -8,6 +8,7 @@ import com.shahad.app.repositories.mappers.DomainMapper
 import com.shahad.app.core.models.Series
 import com.shahad.app.repositories.convertTo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SeriesRepositoryImp @Inject constructor(
@@ -19,7 +20,9 @@ class SeriesRepositoryImp @Inject constructor(
     override suspend fun getSeries(numberOfSeries: Int): Flow<List<Series>> {
         refreshSeries(numberOfSeries)
         return dao.getSeries()
-            .convertTo(domainMappers.seriesMapper::map)
+            .convertTo(domainMappers.seriesMapper::map).map {
+                it.onEach {series ->  if (ifSeriesFavourite(series.id))  series.isFavourite = true }
+            }
     }
 
     override suspend fun refreshSeries(numberOfSeries: Int) {
@@ -29,25 +32,23 @@ class SeriesRepositoryImp @Inject constructor(
             numberOfSeries,
             0,
         ){ body ->
-            body?.data?.results?.map { seriesDto ->
-                localMappers.seriesEntityMapper.map(seriesDto) //TODO get if series is favourite
-            }
+            body?.data?.results?.map(localMappers.seriesEntityMapper::map)
         }
     }
 
     override fun searchSeries(keyWord: String): Flow<List<Series>?> {
         return wrapWithFlow(
             request = { api.getSeries(searchKeyWord = keyWord) },
-            mapper = { Series(it.id,it.rating,it.title ?: "",it.thumbnail.toImageUrl()) } //TODO get if series is favourite
+            mapper = { Series(it.id,it.rating,it.title ?: "",it.thumbnail.toImageUrl(),ifSeriesFavourite(it.id)) }
         )
     }
 
     override fun getFavoriteSeries(): Flow<List<Series>> {
-        return dao.getFavoriteSeries().convertTo(domainMappers.favoriteSeriesMapper::map)
+        return dao.getFavoriteSeries().convertTo(domainMappers.seriesMapper::map)
     }
 
     override suspend fun addFavouriteSeries(series: Series) {
-        dao.insertFavouriteSeries(domainMappers.favoriteSeriesMapper.inverseMap(series))
+        dao.insertFavouriteSeries(domainMappers.seriesMapper.inverseMap(series.apply { isFavourite = true }))
     }
 
     override suspend fun deleteFavouriteSeries(seriesId: Int) {
@@ -57,5 +58,9 @@ class SeriesRepositoryImp @Inject constructor(
     override suspend fun clearFavoriteSeries() {
         dao.clearFavoriteSeries()
     }
+
+    suspend fun ifSeriesFavourite(seriesId: Int) =
+        dao.ifSeriesFavourite(seriesId)
+
 
 }

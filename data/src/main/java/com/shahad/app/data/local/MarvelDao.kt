@@ -36,17 +36,19 @@ interface MarvelDao{
     @Query("SELECT * From CreatorEntity")
     fun getCreator(): Flow<List<CreatorEntity>>
 
+    @Query("SELECT EXISTS (SELECT * FRom SeriesEntity where id = :seriesId and isFavorite = 1)")
+    suspend fun ifSeriesFavourite(seriesId: Int): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavouriteSeries(series: FavoriteEntity)
+    suspend fun insertFavouriteSeries(series: SeriesEntity)
 
-    @Query("DELETE From FavoriteEntity Where  id = :seriesId")
+    @Query("Update SeriesEntity set isFavorite = 0  Where id = :seriesId ")
     suspend fun deleteFavouriteSeries(seriesId: Int)
 
-    @Query("SELECT * From FavoriteEntity")
-    fun getFavoriteSeries(): Flow<List<FavoriteEntity>>
+    @Query("SELECT * From SeriesEntity where isFavorite = 1")
+    fun getFavoriteSeries(): Flow<List<SeriesEntity>>
 
-    @Query("DELETE From FavoriteEntity")
+    @Query("Update SeriesEntity set isFavorite = 0 ")
     suspend fun clearFavoriteSeries()
 
 

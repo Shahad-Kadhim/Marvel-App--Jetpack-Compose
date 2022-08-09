@@ -6,5 +6,4 @@ class DomainMapper @Inject constructor(
     val characterMapper: CharacterMapper,
     val seriesMapper: SeriesMapper,
     val creatorMapper: CreatorMapper,
-    val favoriteSeriesMapper: FavoriteSeriesMapper
 )

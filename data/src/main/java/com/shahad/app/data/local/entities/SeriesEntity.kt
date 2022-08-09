@@ -9,5 +9,6 @@ data class SeriesEntity (
     val rating: String?,
     val title: String,
     val imageUrl: String,
-    val lastDateModify: String
+    val lastDateModify: String,
+    var isFavorite: Boolean
 )

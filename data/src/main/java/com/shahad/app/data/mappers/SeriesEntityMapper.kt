@@ -14,7 +14,8 @@ class SeriesEntityMapper @Inject constructor(): Mapper<SeriesDto, SeriesEntity> 
             rating = input.rating,
             title = input.title ?: "",
             imageUrl = input.thumbnail.toImageUrl(),
-            lastDateModify = input.modified
+            lastDateModify = input.modified,
+            isFavorite = false
         )
 
 }

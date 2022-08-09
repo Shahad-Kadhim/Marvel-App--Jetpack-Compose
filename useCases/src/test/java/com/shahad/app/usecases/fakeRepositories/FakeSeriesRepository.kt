@@ -1,7 +1,6 @@
 package com.shahad.app.usecases.fakeRepositories
 
 import com.shahad.app.core.models.Series
-import com.shahad.app.data.local.entities.FavoriteEntity
 import com.shahad.app.data.local.entities.SeriesEntity
 import com.shahad.app.data.mappers.*
 import com.shahad.app.data.remote.response.SeriesDto
@@ -16,7 +15,7 @@ class FakeSeriesRepository: SeriesRepository {
 
     var domainMapper: DomainMapper = DomainMapper(
         CharacterMapper(), SeriesMapper(),
-        CreatorMapper(), FavoriteSeriesMapper()
+        CreatorMapper()
     )
 
     var localMapper: LocalMappers = LocalMappers(
@@ -31,7 +30,7 @@ class FakeSeriesRepository: SeriesRepository {
         Pair(2, SeriesDto(id = 2, title = "s2", description = "d2", modified = "2020/2/1")),
     )
 
-    private  val favoriteSeries =  mutableMapOf<Int, FavoriteEntity>()
+    private  val favoriteSeries =  mutableMapOf<Int, SeriesEntity>()
 
     private val localSeries = mutableMapOf<Int, SeriesEntity>()
 
@@ -66,10 +65,10 @@ class FakeSeriesRepository: SeriesRepository {
             if (shouldReturnError) {
                 emit(null)
             } else {
-                val series = remoteSeries.values.filter { it.title.contains(keyWord) }.map {
+                val series = remoteSeries.values.filter { it.title?.contains(keyWord)  == true }.map {
                     Series(
                         id = it.id,
-                        title = it.title,
+                        title = it.title ?: "",
                         imageUrl = it.thumbnail.toImageUrl(),
                         rating = "5"
                     )
@@ -81,12 +80,12 @@ class FakeSeriesRepository: SeriesRepository {
 
     override fun getFavoriteSeries(): Flow<List<Series>> {
         return flow {
-            emit(favoriteSeries.values.map(domainMapper.favoriteSeriesMapper::map))
+            emit(favoriteSeries.values.map(domainMapper.seriesMapper::map))
         }
     }
 
     override suspend fun addFavouriteSeries(series: Series) {
-        favoriteSeries[series.id] = domainMapper.favoriteSeriesMapper.inverseMap(series)
+        favoriteSeries[series.id] = domainMapper.seriesMapper.inverseMap(series.apply { isFavourite = true })
     }
 
     override suspend fun deleteFavouriteSeries(seriesId: Int) {

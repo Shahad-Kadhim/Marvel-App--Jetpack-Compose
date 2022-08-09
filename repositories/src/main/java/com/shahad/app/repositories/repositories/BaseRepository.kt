@@ -15,7 +15,7 @@ internal interface BaseRepository {
         insertIntoDatabase: suspend (List<U>) -> Unit,
         numberOfResponse: Int,
         position: Int,
-        mapper: (T?) -> List<U>?,
+        mapper: suspend (T?) -> List<U>?,
     ) {
         try {
             request(numberOfResponse, position).also { response ->
@@ -32,7 +32,7 @@ internal interface BaseRepository {
     }
 
 
-    fun <T,U> wrapWithFlow(request: suspend () -> Response<BaseResponse<T>>, mapper: (T) -> U): Flow<List<U>?> {
+    fun <T,U> wrapWithFlow(request: suspend () -> Response<BaseResponse<T>>, mapper: suspend (T) -> U): Flow<List<U>?> {
         return flow {
             try {
                 emit(request().takeIf { it.isSuccessful }?.let {

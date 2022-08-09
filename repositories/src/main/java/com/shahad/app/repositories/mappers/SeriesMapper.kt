@@ -13,7 +13,16 @@ class SeriesMapper @Inject constructor(): Mapper<SeriesEntity, Series> {
             input.rating,
             input.title,
             input.imageUrl,
-            isFavourite = false
+            isFavourite = input.isFavorite
         )
 
+    fun  inverseMap(input: Series): SeriesEntity =
+        SeriesEntity(
+            id = input.id,
+            rating = input.rating,
+            title = input.title,
+            imageUrl = input.imageUrl,
+            isFavorite = input.isFavourite,
+            lastDateModify = ""
+        )
 }
