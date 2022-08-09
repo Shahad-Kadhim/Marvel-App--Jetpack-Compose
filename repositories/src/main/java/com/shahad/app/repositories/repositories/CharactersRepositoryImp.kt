@@ -36,7 +36,7 @@ class CharactersRepositoryImp @Inject constructor(
                 dao = dao,
                 localMappers =localMappers,
             ),
-            pagingSourceFactory = { dao.pagingSource(searchKeyword?.replace(' ','%') ?: "%")}
+            pagingSourceFactory = { dao.getCharacterPage(searchKeyword?.replace(' ','%') ?: "%")}
         ).flow.map {
             it.map(domainMappers.characterMapper::map)
         }
