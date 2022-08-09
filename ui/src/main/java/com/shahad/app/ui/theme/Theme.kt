@@ -15,8 +15,8 @@ private val DarkColorPalette = darkColors(
     primaryVariant = primaryShadeNight,
     secondary =  backgroundCardNight,
     background = backgroundColorNight,
-    onSecondary = primaryShadeNight,
-    onBackground = primaryShadeNight,
+    onSecondary = textColorNight,
+    onBackground = textColorNight,
     onPrimary = Color.White
 )
 @SuppressLint("ConflictingOnColor")
@@ -25,8 +25,8 @@ private val LightColorPalette = lightColors(
     primaryVariant = primaryShadeLight,
     secondary = backgroundCardLight,
     background = backgroundColorLight,
-    onSecondary = primaryShadeLight,
-    onBackground = primaryShadeLight,
+    onSecondary = textColorLight,
+    onBackground = textColorLight,
     onPrimary = Color.White
 //    onSurface = Colors().brandColor,
 )

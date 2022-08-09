@@ -14,3 +14,5 @@ val backgroundColorLight: Color = Color(0xFFFAFAFA)
 val backgroundColorNight: Color = Color(0xFF0C0C0C)
 val backgroundCardLight: Color = Color.White
 val backgroundCardNight: Color = Color.Black
+val textColorNight: Color = Color(0xFFE2DADA)
+val textColorLight: Color = Color(0xFF121212)

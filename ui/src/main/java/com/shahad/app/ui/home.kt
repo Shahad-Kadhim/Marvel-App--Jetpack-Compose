@@ -45,7 +45,6 @@ fun Home(
         topBar = { HomeAppBar() },
         content = { padding ->
             val series by viewModel.series.observeAsState()
-            val creators by viewModel.creators.observeAsState()
             val characters = viewModel.characters.collectAsLazyPagingItems()
 
             LazyColumn(modifier = Modifier
@@ -117,16 +116,6 @@ fun <T> HandleHomeState(
                 showResult(it)
             }
         }
-    }
-}
-
-@Composable
-fun CreatorRecycle(creators: List<Creator>) {
-    Section(
-        sectionTitle = "Creators",
-        items = creators,
-    ) {
-        CreatorItem(it)
     }
 }
 

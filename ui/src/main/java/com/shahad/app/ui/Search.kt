@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -99,6 +100,7 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
                                 vertical = MaterialTheme.Spacing.tiny,
                                 horizontal = MaterialTheme.Spacing.medium
                             ),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
                         )
                         BasicTextField(
                             value = search,
@@ -106,7 +108,11 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
                                 viewModel.search.value = it
                             },
                             modifier = Modifier.fillMaxWidth(),
-                            maxLines = 1
+                            maxLines = 1,
+                            textStyle = TextStyle(
+                                color = MaterialTheme.colors.onBackground
+                            ),
+                            singleLine = true
                         )
                     }
                     Image(
@@ -162,7 +168,7 @@ fun ShowSeries(state: SearchScreenState<List<Series>?>?) {
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
-            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium)
+            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.small)
         ) {
             items(it) {
                 SeriesItem(
@@ -203,7 +209,7 @@ fun ShowCreators(state: SearchScreenState<List<Creator>?>?) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.Spacing.tiny),
-            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.tiny)
+            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.small)
         ) {
             items(it) {
                 CreatorItem(creator = it)

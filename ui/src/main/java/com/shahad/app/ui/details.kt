@@ -46,86 +46,85 @@ fun CharacterDetailsScreen(
             val stories by viewModel.stories.observeAsState()
             HandleDetailsState(state = character) { character ->
                 character?.let {
-                    Column(modifier = Modifier.padding(paddingValues)) {
-                        Box(
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        LazyColumn(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(0.5f)
+                                .padding(paddingValues)
                         ){
-                            AsyncImage(
-                                model = it.image,
-                                contentDescription = it.name,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.FillBounds
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .padding(MaterialTheme.Spacing.large)
-                                    .align(Alignment.TopStart)
-                                    .size(32.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.LightGray),
-                                contentAlignment = Alignment.Center,
-                            ){
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_back_arrow),
-                                    contentDescription = "go back",
+                            item{
+                                AsyncImage(
+                                    model = it.image,
+                                    contentDescription = it.name,
                                     modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .clickable {
-                                            navController.navigateUp()
-                                        },
-                                    colorFilter = ColorFilter.tint(Color.Black)
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(0.6f),
+                                    contentScale = ContentScale.FillBounds
                                 )
                             }
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_favouraite),
-                                contentDescription = "go back",
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(MaterialTheme.Spacing.large)
-                                    .clickable {
-                                        //TODO LATER
-                                    },
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
-                            )
-                        }
-                        Text(
-                            text = it.name,
-                            fontSize = 24.sp,
-                            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium , vertical = MaterialTheme.Spacing.small)
-                        )
-                        Text(
-                            text = it.description,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium)
-                        )
-                        when(stories){
-                            is DetailsScreenState.Error -> {
-                            }
-                            DetailsScreenState.Loading -> {
-                            }
-                            is DetailsScreenState.Success -> {
+                            item{
                                 Text(
-                                    text = "Stories",
-                                    modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium, vertical = MaterialTheme.Spacing.small),
-                                    fontSize = 24.sp
+                                    text = it.name,
+                                    fontSize = 24.sp,
+                                    modifier = Modifier.padding(
+                                        horizontal = MaterialTheme.Spacing.medium,
+                                        vertical = MaterialTheme.Spacing.medium
+                                    )
                                 )
-                                val stories = (stories as DetailsScreenState.Success<List<Story>?>).data
+                            }
+                            item{
+                                Text(
+                                    text = it.description,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.medium)
+                                )
+                            }
+                            if(stories is DetailsScreenState.Success) {
+                                item{
+                                    Text(
+                                        text = "Stories",
+                                        modifier = Modifier.padding(
+                                            horizontal = MaterialTheme.Spacing.medium,
+                                            vertical = MaterialTheme.Spacing.small
+                                        ),
+                                        fontSize = 24.sp
+                                    )
+                                }
+                                val stories =
+                                    (stories as DetailsScreenState.Success<List<Story>?>).data
                                 stories?.let {
-                                    LazyColumn(){
-                                        items(it){
+                                        items(it) {
                                             StoryItem(story = it)
                                         }
-                                    }   
                                 }
                             }
-                            null -> {}
                         }
-                    }
-                }
+                        Box(
+                            modifier = Modifier
+                                .padding(MaterialTheme.Spacing.large)
+                                .align(Alignment.TopStart)
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(Color.LightGray),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_back_arrow),
+                                contentDescription = "go back",
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .clickable {
+                                        navController.navigateUp()
+                                    },
+                                colorFilter = ColorFilter.tint(Color.Black)
+                            )
+                        }
 
+                    }
+
+                }
             }
         }
     )
@@ -151,7 +150,7 @@ fun StoryItem(story: Story){
             )
             .clip(RoundedCornerShape(MaterialTheme.Spacing.small))
             .fillMaxWidth()
-            .background(MaterialTheme.colors.secondary)
+            .background(MaterialTheme.colors.secondary),
     ) {
         Column(
             modifier = Modifier

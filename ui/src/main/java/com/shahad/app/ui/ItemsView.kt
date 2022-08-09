@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.compose.*
 import com.shahad.app.core.models.Character
 import com.shahad.app.core.models.Creator
@@ -197,16 +196,14 @@ fun CharacterItem(
 @Composable
 fun CreatorItem(creator: Creator) {
     Column(
-        modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.tiny)
+        modifier = Modifier.padding(horizontal = MaterialTheme.Spacing.tiny).fillMaxSize()
     ) {
-        //TODO change image
-//        AsyncImage(
-//            model = creator.imageUrl,
-        Image(
-            painter = painterResource(id = R.drawable.test_image),
+        AsyncImage(
+            model = creator.imageUrl,
             contentDescription = null,
             modifier = Modifier
-                .size(100.dp)
+                .padding(MaterialTheme.Spacing.medium)
+                .aspectRatio(1f)
                 .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(MaterialTheme.Spacing.small))
