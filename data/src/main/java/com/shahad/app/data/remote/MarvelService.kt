@@ -11,6 +11,7 @@ interface MarvelService{
     @GET("characters")
     suspend fun getCharacters(
         @Query("limit") numberOfCharacters: Int = 20,
+        @Query("offset") offset: Int = 20,
         @Query("nameStartsWith") searchKeyWord: String? = null,
     ): Response<BaseResponse<CharacterDto>>
 
@@ -18,13 +19,15 @@ interface MarvelService{
     @GET("series")
     suspend fun getSeries(
         @Query("limit") numberOfCharacters: Int = 20,
+        @Query("offset") offset: Int = 20,
         @Query("titleStartsWith") searchKeyWord: String? = null,
-        ): Response<BaseResponse<SeriesDto>>
+    ): Response<BaseResponse<SeriesDto>>
 
 
     @GET("creators")
     suspend fun getCreators(
         @Query("limit") numberOfCharacters: Int = 20,
+        @Query("offset") offset: Int = 20,
         @Query("nameStartsWith") searchKeyWord: String? = null,
     ): Response<BaseResponse<CreatorDto>>
 

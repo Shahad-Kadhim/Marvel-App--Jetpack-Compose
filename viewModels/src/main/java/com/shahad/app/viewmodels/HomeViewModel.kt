@@ -3,8 +3,8 @@ package com.shahad.app.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.shahad.app.core.HomeScreenState
-import com.shahad.app.core.models.Character
 import com.shahad.app.core.models.Creator
 import com.shahad.app.core.models.Series
 import com.shahad.app.usecases.*
@@ -23,12 +23,11 @@ class HomeViewModel @Inject constructor(
 
     val series = MutableLiveData<HomeScreenState<List<Series>?>?>()
     val creators = MutableLiveData<HomeScreenState<List<Creator>?>?>()
-    val characters = MutableLiveData<HomeScreenState<List<Character>?>?>()
+    val characters = charactersUseCase.invoke().cachedIn(viewModelScope)
 
     init {
         collectSeries()
         collectCreators()
-        collectCharacter()
     }
 
      private fun collectCreators() {
@@ -47,13 +46,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun collectCharacter(){
-        viewModelScope.launch{
-            charactersUseCase.invoke(20).collect {
-                characters.value = it
-            }
-        }
-    }
+//    private fun collectCharacter(){
+//        viewModelScope.launch{
+//            charactersUseCase.invoke(20).collect {
+//                characters.value = it
+//            }
+//        }
+//    }
 
     fun addSeriesToFavorite(series: Series){
         viewModelScope.launch {

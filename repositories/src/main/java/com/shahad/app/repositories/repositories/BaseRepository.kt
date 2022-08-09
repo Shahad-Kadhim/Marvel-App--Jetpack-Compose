@@ -5,18 +5,20 @@ import com.shahad.app.data.remote.response.BaseResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
+import java.text.FieldPosition
 
 
 internal interface BaseRepository {
 
     suspend fun <T, U> refreshDataBase(
-        request: suspend (Int) -> Response<T>,
+        request: suspend (Int,Int) -> Response<T>,
         insertIntoDatabase: suspend (List<U>) -> Unit,
         numberOfResponse: Int,
+        position: Int,
         mapper: (T?) -> List<U>?,
     ) {
         try {
-            request(numberOfResponse).also { response ->
+            request(numberOfResponse, position).also { response ->
                 if (response.isSuccessful) {
                     val entities = mapper(response.body())
                     entities?.let { it ->

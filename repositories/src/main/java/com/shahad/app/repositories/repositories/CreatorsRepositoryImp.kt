@@ -27,6 +27,7 @@ class CreatorsRepositoryImp @Inject constructor(
         refreshDataBase(
             api::getCreators,
             dao::insertCreator,
+            0 ,
             numberOfCreators
         ){body ->
             body?.data?.results?.map { creatorDto ->

@@ -74,4 +74,6 @@ dependencies {
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1'
     testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
 
+    //Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
 }

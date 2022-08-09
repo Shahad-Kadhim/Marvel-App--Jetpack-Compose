@@ -27,6 +27,7 @@ class SeriesRepositoryImp @Inject constructor(
             api::getSeries,
             dao::insertSeries,
             numberOfSeries,
+            0,
         ){ body ->
             body?.data?.results?.map { seriesDto ->
                 localMappers.seriesEntityMapper.map(seriesDto) //TODO get if series is favourite

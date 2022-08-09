@@ -63,4 +63,6 @@ dependencies {
     testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
 
 
+    //Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
 }

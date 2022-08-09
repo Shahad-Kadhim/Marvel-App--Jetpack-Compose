@@ -1,7 +1,5 @@
 package com.shahad.app.ui
 
-import android.util.Log
-import androidx.annotation.RawRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -10,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -35,10 +32,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.shahad.app.core.Constants
 import com.shahad.app.core.FilterType
 import com.shahad.app.core.SearchScreenState
@@ -60,10 +55,13 @@ fun Search(navController: NavController, viewModel: SearchViewModel){
             val filters = listOf(FilterType.CHARACTER, FilterType.CREATOR, FilterType.SERIES)
             val rotateAnimation = remember { Animatable(0f) }
             val scope = rememberCoroutineScope()
-            val characters by viewModel.characters.observeAsState()
+            val characters = viewModel.characters.collectAsLazyPagingItems()
             val creators by viewModel.creator.observeAsState()
             val series by viewModel.series.observeAsState()
-            Column(Modifier.padding(padding).fillMaxSize()) {
+            Column(
+                Modifier
+                    .padding(padding)
+                    .fillMaxSize()) {
                 Row(
                     Modifier
                         .padding(
@@ -215,18 +213,20 @@ fun ShowCreators(state: SearchScreenState<List<Creator>?>?) {
 }
 
 @Composable
-fun ShowCharacters(state: SearchScreenState<List<Character>?>?,navController: NavController) {
-    HandleState(state = state) {
-        Log.i("ZZZ",it.toString())
-        LazyColumn{
-            items(it) { character ->
-                CharacterItem(character = character){
-                    navController.navigate("${Constants.DETAILS_SCREEN}/${character.id}")
+fun ShowCharacters(state: LazyPagingItems<Character>, navController: NavController) {
+    LazyColumn{
+        items(state.itemCount) { index ->
+
+            state[index]?.let {
+                CharacterItem(character = it){
+                    navController.navigate("${Constants.DETAILS_SCREEN}/${it.id}")
                 }
             }
         }
     }
+
 }
+
 
 
 @Composable

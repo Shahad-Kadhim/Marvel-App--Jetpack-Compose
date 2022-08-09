@@ -39,6 +39,9 @@ android {
 dependencies {
 
 
+    implementation "androidx.room:room-paging:2.4.3"
+
+
     //room database
     implementation "androidx.room:room-runtime:$room_version"
     kapt "org.xerial:sqlite-jdbc:3.36.0"
@@ -73,5 +76,9 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
+
+    //Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
+    implementation(project(':core'))
 
 }

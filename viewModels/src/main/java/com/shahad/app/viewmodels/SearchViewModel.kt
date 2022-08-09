@@ -1,6 +1,8 @@
 package com.shahad.app.viewmodels
 
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.shahad.app.core.FilterType
 import com.shahad.app.core.SearchScreenState
 import com.shahad.app.core.models.Character
@@ -26,20 +28,24 @@ class SearchViewModel @Inject constructor(
     val filterType = MutableStateFlow<FilterType>(FilterType.CHARACTER)
     val isFiltersVisible = MutableStateFlow(false)
 
-    val characters = MediatorLiveData<SearchScreenState<List<Character>?>?>().apply {
+    val characters = MediatorLiveData<PagingData<Character>>().apply {
         addSource(search.asLiveData()){ characterName ->
             takeIf { filterType.value == FilterType.CHARACTER && characterName.isNotBlank() }?.let {
-                collect(searchCharacterUseCase.invoke(characterName))
+                collect(searchCharacterUseCase.invoke(characterName).cachedIn(viewModelScope))
             }
-            emitNullIfEmpty(this,characterName)
+            if (characterName.isNullOrBlank()){
+                this.value = PagingData.empty<Character>()
+            }
         }
         addSource(filterType.asLiveData()){ currentFilterType ->
             takeIf { currentFilterType == FilterType.CHARACTER && search.value.isNotBlank()}?.let {
-                collect(searchCharacterUseCase.invoke(search.value))
+                collect(searchCharacterUseCase.invoke(search.value).cachedIn(viewModelScope))
             }
-            emitNullIfEmpty(this,search.value)
+            if (search.value.isBlank()){
+                this.value = PagingData.empty<Character>()
+            }
         }
-    }
+    }.asFlow()
 
     val creator = MediatorLiveData<SearchScreenState<List<Creator>?>?>().apply {
         addSource(search.asLiveData()){ creatorName ->

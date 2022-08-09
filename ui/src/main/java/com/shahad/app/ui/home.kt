@@ -1,5 +1,6 @@
 package com.shahad.app.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.shahad.app.core.Constants
 import com.shahad.app.core.HomeScreenState
@@ -44,9 +46,11 @@ fun Home(
         content = { padding ->
             val series by viewModel.series.observeAsState()
             val creators by viewModel.creators.observeAsState()
-            val characters by viewModel.characters.observeAsState()
+            val characters = viewModel.characters.collectAsLazyPagingItems()
 
-            LazyColumn(modifier = Modifier.padding(padding).fillMaxSize()){
+            LazyColumn(modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()){
 
                 series?.let { state ->
                     item{
@@ -83,15 +87,15 @@ fun Home(
 
                         }
                     }
-                    it.showIfSuccess{ state ->
-                        state.data?.let { list ->
-                            items(list){ character ->
-                                CharacterItem(character = character ){
-                                    navController.navigate("${Constants.DETAILS_SCREEN}/${character.id.toString()}",)
-                                }
+                    items(characters.itemCount){ index ->
+                        Log.i("TTT",characters.itemCount.toString())
+                        characters[index]?.let {
+                            CharacterItem(character = it ){
+                                navController.navigate("${Constants.DETAILS_SCREEN}/${it.id.toString()}",)
                             }
                         }
                     }
+
                 }
 
             }

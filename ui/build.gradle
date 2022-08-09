@@ -72,4 +72,6 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.0-alpha01'
+    //Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
 }
